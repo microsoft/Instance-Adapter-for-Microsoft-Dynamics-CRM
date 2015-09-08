@@ -1,0 +1,552 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActiveDirectoryExceptionCaption" xml:space="preserve">
+    <value>Active Directory Exception</value>
+  </data>
+  <data name="ActiveDirectoryObjectGuid" xml:space="preserve">
+    <value>Active Directory object Guid: {0}</value>
+  </data>
+  <data name="ActiveInstallDirectoryExceptionMessage" xml:space="preserve">
+    <value>Add the Microsoft Dynamics CRM Integration User Account "{0}" to the PrivUserGroup or Groups for your Organizations in the "{1}" Domain.</value>
+  </data>
+  <data name="ActiveRemoveDirectoryExceptionMessage" xml:space="preserve">
+    <value>Could not remove the Microsoft Dynamics CRM Integration User account "{0}" from the PrivUserGroup or Groups for your Organizations in the "{1}" Domain.</value>
+  </data>
+  <data name="AdapterNotRegisteredExceptionMessage" xml:space="preserve">
+    <value>Ensure that the Microsoft Dynamics CRM2011 adapter settings have been applied and are correct.</value>
+  </data>
+  <data name="AddingIntegrationKeyError" xml:space="preserve">
+    <value>An error occurred adding {0} to {1}.</value>
+  </data>
+  <data name="AddingIsvExtensionPrivilegeExceptionMessage" xml:space="preserve">
+    <value>Could not retrieve the {0} role</value>
+  </data>
+  <data name="ApplicationExceptionCaption" xml:space="preserve">
+    <value>Application Exception</value>
+  </data>
+  <data name="BothOption" xml:space="preserve">
+    <value>BOTH</value>
+  </data>
+  <data name="CancelConfimationMessage" xml:space="preserve">
+    <value>Are you sure you want to cancel the CRM Adapter Configuration?</value>
+  </data>
+  <data name="CommandLineLaunchMessage" xml:space="preserve">
+    <value>Launching Windows application for configuration with command line arguments: {0}</value>
+  </data>
+  <data name="ConfigArgumentValueMessage" xml:space="preserve">
+    <value>Configuration Argument: {0} has value: {1}</value>
+  </data>
+  <data name="ConfigurationCanceledMessage" xml:space="preserve">
+    <value>Configuration was canceled by the user.</value>
+  </data>
+  <data name="ConfigurationFinishedMessage" xml:space="preserve">
+    <value>Finished running the CRM Adapter Configuration utility.</value>
+  </data>
+  <data name="ConfigureButtonText" xml:space="preserve">
+    <value>Co&amp;nfigure</value>
+  </data>
+  <data name="ConnectionLabelGetText" xml:space="preserve">
+    <value>Getting CRM organizations ...</value>
+  </data>
+  <data name="ConnectionLabelNoOrgsFoundText" xml:space="preserve">
+    <value>Did not find any organizations.</value>
+  </data>
+  <data name="ConnectionLabelSelectText" xml:space="preserve">
+    <value>Please select the organization that you wish to configure: </value>
+  </data>
+  <data name="Crm2011ClientCreationExceptionMessage" xml:space="preserve">
+    <value>Could not create the CRM 2011 Xrm Client.</value>
+  </data>
+  <data name="CRMAdapterConfigurationCaption" xml:space="preserve">
+    <value>Microsoft Dynamics CRM 2011 Adapter Configuration</value>
+  </data>
+  <data name="CrmDatabaseWriterExceptionMessage" xml:space="preserve">
+    <value>The user {0} must be in the db_datawriter and db_datareader roles in the {1} database on the {2} server</value>
+  </data>
+  <data name="CRMExceptionThrown" xml:space="preserve">
+    <value>The CRM platform threw the following exception:</value>
+  </data>
+  <data name="CrmVersionMessage" xml:space="preserve">
+    <value>CRM Version for the "{0}" organization is "{1}"</value>
+  </data>
+  <data name="DeactivationExceptionMessage" xml:space="preserve">
+    <value>Could not deactivate entity: {0}</value>
+  </data>
+  <data name="DirectoryEntryExceptionMessage" xml:space="preserve">
+    <value>Unable to locate the Distinguished Name for the object "{0}" in the "{1}" domain</value>
+  </data>
+  <data name="DiscoveryServiceUrlStub" xml:space="preserve">
+    <value>http://{0}{1}/mscrmservices/2007/ad/crmdiscoveryservice.asmx</value>
+  </data>
+  <data name="DomainName" xml:space="preserve">
+    <value>Domain: {0}</value>
+  </data>
+  <data name="DuplicateKey" xml:space="preserve">
+    <value>duplicate key</value>
+  </data>
+  <data name="DuplicateKeyIntegrationUserMessage" xml:space="preserve">
+    <value>Tried adding duplicate role with Id {0} to the integration user "{0}".</value>
+  </data>
+  <data name="EntityRemovalExceptionMessage" xml:space="preserve">
+    <value>Could not remove the {0} entity.</value>
+  </data>
+  <data name="ExceptionCaption" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ExceptionDump" xml:space="preserve">
+    <value>Exception: </value>
+  </data>
+  <data name="FinishedActivatingAdapterMessage" xml:space="preserve">
+    <value>Finished activating the {0} adapter.</value>
+  </data>
+  <data name="FinishedAddingIsvExtensionPrivilegeMessage" xml:space="preserve">
+    <value>Finished adding the ISV Extension Privilege to the {0} role</value>
+  </data>
+  <data name="FinishedAddingUserToRoleMessage" xml:space="preserve">
+    <value>Finished adding the "{0}" user to the proper roles</value>
+  </data>
+  <data name="FinishedButtonText" xml:space="preserve">
+    <value>&amp;Finish</value>
+  </data>
+  <data name="FinishedCopyingConfigFileMessage" xml:space="preserve">
+    <value>Finished copying configuration files</value>
+  </data>
+  <data name="FinishedCreatingRoleMessage" xml:space="preserve">
+    <value>Finished Creating the Dynamics Integration role</value>
+  </data>
+  <data name="FinishedDeactivatingMessage" xml:space="preserve">
+    <value>Finished deactivating the existing {0}s</value>
+  </data>
+  <data name="FinishedDeleteEntityMessage" xml:space="preserve">
+    <value>Finished {0} the {1} entity.</value>
+  </data>
+  <data name="FinishedDeletingConfigFileMessage" xml:space="preserve">
+    <value>Finished deleting directory</value>
+  </data>
+  <data name="FinishedErpSystemUserMessage" xml:space="preserve">
+    <value>{0} the dynamics_erpsystemuser entity.</value>
+  </data>
+  <data name="FinishedExportingPreInstallationStateMessage" xml:space="preserve">
+    <value>Finished exporting the pre installation customizations.</value>
+  </data>
+  <data name="FinishedGeneratingProviderConfiguration" xml:space="preserve">
+    <value>Finished generating configuration for the "{0}" entity</value>
+  </data>
+  <data name="FinishedGettingDirectoryEntry" xml:space="preserve">
+    <value>Found Directory Entry with name "{0}" and an object type of "{1}"</value>
+  </data>
+  <data name="FinishedGrantingPrivilegesMessage" xml:space="preserve">
+    <value>Finished granting privileges to the Dynamics Integration role</value>
+  </data>
+  <data name="FinishedIISResetMessage" xml:space="preserve">
+    <value>Finished resetting IIS on {0}</value>
+  </data>
+  <data name="FinishedImportingCustomizationsMessage" xml:space="preserve">
+    <value>Finished importing the {0} customizations.</value>
+  </data>
+  <data name="FinishedInstallingPluginsMessage" xml:space="preserve">
+    <value>Finished {0} the plugins for the {1} Organization.</value>
+  </data>
+  <data name="FinishedInstallingSolutionMessage" xml:space="preserve">
+    <value>Finished {0} the solution for the {1} Organization.</value>
+  </data>
+  <data name="FinishedModifingEntitiesMessage" xml:space="preserve">
+    <value>Finished {0} the customizations for the {1} entity.</value>
+  </data>
+  <data name="FinishedModifingOrgsMessage" xml:space="preserve">
+    <value>Finished {0} the updates for the {1} Organization.</value>
+  </data>
+  <data name="FinishedPrivilegesMessage" xml:space="preserve">
+    <value>Finished {0} the privilege updates for the {1} database.</value>
+  </data>
+  <data name="FinishedPublishingMessage" xml:space="preserve">
+    <value>Finished publishing the metadata changes.</value>
+  </data>
+  <data name="FinishedRegistryUpdateMessage" xml:space="preserve">
+    <value>Finished Updating Registry key '{0}'</value>
+  </data>
+  <data name="FinishedRemovingIsvExtensionPrivilegeMessage" xml:space="preserve">
+    <value>Finished removing the ISV Extension Privilege from the {0} role</value>
+  </data>
+  <data name="FinishedRemovingPrivilegeMessage" xml:space="preserve">
+    <value>Finished removing the {0} privilege from the {1} role</value>
+  </data>
+  <data name="FinishedRemovingRoleMessage" xml:space="preserve">
+    <value>Finished deleting the Dynamics Integration role</value>
+  </data>
+  <data name="FinishedRenamingMessage" xml:space="preserve">
+    <value>Finished renaming the existing {0}s</value>
+  </data>
+  <data name="FinishedRetreivingEntityMetadata" xml:space="preserve">
+    <value>Finished retrieving all entity metadata</value>
+  </data>
+  <data name="FinishedSettingAccountNumberRequirementMessage" xml:space="preserve">
+    <value>Finished setting requirement level for account number.</value>
+  </data>
+  <data name="FinishedSettingAddressRequirementMessage" xml:space="preserve">
+    <value>Finished setting requirement level for address 1 name on {0}</value>
+  </data>
+  <data name="FinishedSettingDecimalPrecisionMessage" xml:space="preserve">
+    <value>Finished setting product decimal precision.</value>
+  </data>
+  <data name="FinishedSettingDefaultAddress2ShippingMethodMessage" xml:space="preserve">
+    <value>Finished setting default value for address 2 {0} on {1}</value>
+  </data>
+  <data name="FinishedSettingGroupMembershipMessage" xml:space="preserve">
+    <value>Finished setting Group membership for: {0}</value>
+  </data>
+  <data name="FinishedSettingUserPropertiesMessage" xml:space="preserve">
+    <value>Finished setting the 'Is Integration User' and 'Access mode' properties on the "{0}" user</value>
+  </data>
+  <data name="FinishedUpdatingOrganizationMessage" xml:space="preserve">
+    <value>Finished updating organization.</value>
+  </data>
+  <data name="IISResetExceptionMessage" xml:space="preserve">
+    <value>You must restart the Microsoft Dynamics CRM web site. Otherwise, the Microsoft Dynamics CRM Configuration Utility configurations will not be activated.</value>
+  </data>
+  <data name="ImportCustomizationsCheckedMsg" xml:space="preserve">
+    <value>You have selected to import Microsoft Dynamics Adapter customizations. These customizations may overwrite customizations that have already been imported into Microsoft Dynamics CRM. To continue, click OK or click Cancel to change your selection.</value>
+  </data>
+  <data name="ImportCustomizationsNotCheckedMsg" xml:space="preserve">
+    <value>You have not selected to import Microsoft Dynamics Adapter customizations. You will not be able to integrate data until these customizations have been imported. To continue, click OK or click Cancel to change your selection.</value>
+  </data>
+  <data name="ImportPreCustomizationsMessage" xml:space="preserve">
+    <value>As part of the uninstall process you can import the CRM customizations that were exported when the CRM Adapter was configured. If you do this, any customizations that have been installed since configuring the CRM Adapter could be lost.</value>
+  </data>
+  <data name="Inactive" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+  <data name="InstallationTypeParamterExceptionMessage" xml:space="preserve">
+    <value>The value: {0} which was supplied for the {1} option is not valid.</value>
+  </data>
+  <data name="InstallCompleteMessage" xml:space="preserve">
+    <value>Finished with installation operations.</value>
+  </data>
+  <data name="InstallingOperationName" xml:space="preserve">
+    <value>Installing</value>
+  </data>
+  <data name="InstallOption" xml:space="preserve">
+    <value>INSTALL</value>
+  </data>
+  <data name="InstallParamterMessage" xml:space="preserve">
+    <value>You must specify the Domain, User Name, Password, DiscoveryServiceUrl, and Organization Names to install to.</value>
+  </data>
+  <data name="IntegrationRoleName" xml:space="preserve">
+    <value>Dynamics Integration</value>
+  </data>
+  <data name="IntegrationRoleNameExisits" xml:space="preserve">
+    <value>The Dynamics integration role already exists</value>
+  </data>
+  <data name="IntegrationUserExceptionMessage" xml:space="preserve">
+    <value>Unable to retrieve the CRM 2011 Adapter system user account ID for the {0} user.</value>
+  </data>
+  <data name="MetadataTimeStamp" xml:space="preserve">
+    <value>The current metadata timestamp is: "{0}"</value>
+  </data>
+  <data name="NextButtonText" xml:space="preserve">
+    <value>&amp;Next &gt;</value>
+  </data>
+  <data name="NoDatabasesFound" xml:space="preserve">
+    <value>No CRM Organization databases were retrieved</value>
+  </data>
+  <data name="NoEntitiesFound" xml:space="preserve">
+    <value>No CRM entities were retrieved</value>
+  </data>
+  <data name="NoOrgsWithDbNameFoundExceptionMessage" xml:space="preserve">
+    <value>No CRM Organizations were found with a database name of '{0}'</value>
+  </data>
+  <data name="OctetStream" xml:space="preserve">
+    <value>LDAP Octet stream: {0}</value>
+  </data>
+  <data name="OnlineDiscoveryServiceUrlStub" xml:space="preserve">
+    <value>https://{0}{1}/mscrmservices/2007/Passport/crmdiscoveryservice.asmx</value>
+  </data>
+  <data name="OrganizationBaseLanguageMessage" xml:space="preserve">
+    <value>Base language code for the "{0}" organization is "{1}"</value>
+  </data>
+  <data name="ProviderConfigurationExceptionMessage" xml:space="preserve">
+    <value>An exception occurred while attempting to generate the "{0}ObjectProvider.config" file</value>
+  </data>
+  <data name="ProviderWarningMessage" xml:space="preserve">
+    <value>You have chosen to configure entities for integration.  This could result in the loss of any customizations you have made to existing Object Provider configuration files.</value>
+  </data>
+  <data name="RegistryUpdateExceptionMessage" xml:space="preserve">
+    <value>Failed to update the Registry key '{0}'</value>
+  </data>
+  <data name="RemoveAccountNameDescription" xml:space="preserve">
+    <value>Enter the account that the Microsoft Dynamics CRM Adapter used to connect to Microsoft Dynamics CRM during integrations.</value>
+  </data>
+  <data name="RemoveButtonText" xml:space="preserve">
+    <value>&amp;Remove</value>
+  </data>
+  <data name="RemoveOption" xml:space="preserve">
+    <value>REMOVE</value>
+  </data>
+  <data name="RemovingOperationName" xml:space="preserve">
+    <value>Removing</value>
+  </data>
+  <data name="RenameExceptionMessage" xml:space="preserve">
+    <value>Could not rename entity: {0}</value>
+  </data>
+  <data name="RoleImportExceptionMessage" xml:space="preserve">
+    <value>You need to manually import the Microsoft Dynamics CRM 4.0 customizations prior to running the Microsoft Dynamics CRM Configuration utility.</value>
+  </data>
+  <data name="SalespersonRoleName" xml:space="preserve">
+    <value>Salesperson</value>
+  </data>
+  <data name="SelectedCrmDatabasesLabel" xml:space="preserve">
+    <value>Selected CRM Organization Databases</value>
+  </data>
+  <data name="SelectToImportCaption" xml:space="preserve">
+    <value>Select to Import Pre-Adapter Installation customizations</value>
+  </data>
+  <data name="SkippingImportMsg" xml:space="preserve">
+    <value>Skipping import of Microsoft Dynamics CRM Adapter customizations.</value>
+  </data>
+  <data name="SoapExceptionCaption" xml:space="preserve">
+    <value>Soap Exception</value>
+  </data>
+  <data name="SolutionImportMessage" xml:space="preserve">
+    <value>Please manually import the Connector for Microsoft Dynamics solution for the {0} organization</value>
+  </data>
+  <data name="SqlConnectionExceptionMessage" xml:space="preserve">
+    <value>Could not connect to {0}</value>
+  </data>
+  <data name="StartActivatingAdapterMessage" xml:space="preserve">
+    <value>Activating the {0} adapter.</value>
+  </data>
+  <data name="StartAddingIsvExtensionPrivilegeMessage" xml:space="preserve">
+    <value>Adding the ISV Extension Privilege to the {0} role</value>
+  </data>
+  <data name="StartAddingUserToRoleMessage" xml:space="preserve">
+    <value>Adding the "{0}" user to the proper roles</value>
+  </data>
+  <data name="StartCopyingConfigFileMessage" xml:space="preserve">
+    <value>Starting to copy object provider configuration files to "{0}"</value>
+  </data>
+  <data name="StartCreatingRoleMessage" xml:space="preserve">
+    <value>Creating the Dynamics Integration role</value>
+  </data>
+  <data name="StartDeactivatingMessage" xml:space="preserve">
+    <value>Deactivating the existing {0}s</value>
+  </data>
+  <data name="StartDeleteEntityMessage" xml:space="preserve">
+    <value>{0} the {1} entity.</value>
+  </data>
+  <data name="StartDeletingConfigFileMessage" xml:space="preserve">
+    <value>Deleting object provider configuration directory "{0}"</value>
+  </data>
+  <data name="StartErpSystemUserMessage" xml:space="preserve">
+    <value>{0} the dynamics_erpsystemuser entity.</value>
+  </data>
+  <data name="StartExportingPreInstallationStateMessage" xml:space="preserve">
+    <value>Exporting the pre-configuration customizations.</value>
+  </data>
+  <data name="StartGeneratingProviderConfiguration" xml:space="preserve">
+    <value>Started generating configuration for the {0} entity</value>
+  </data>
+  <data name="StartGettingDirectoryEntry" xml:space="preserve">
+    <value>Getting Active Directory entry "{0}" for object type "{1}"</value>
+  </data>
+  <data name="StartGrantingPrivilegesMessage" xml:space="preserve">
+    <value>Granting privileges to the Dynamics Integration role</value>
+  </data>
+  <data name="StartIISResetMessage" xml:space="preserve">
+    <value>Attempting to reset IIS on {0}</value>
+  </data>
+  <data name="StartImportingCustomizationsMessage" xml:space="preserve">
+    <value>Importing the {0} solution.</value>
+  </data>
+  <data name="StartInstallingPluginsMessage" xml:space="preserve">
+    <value>{0} the plugins for the {1} Organization.</value>
+  </data>
+  <data name="StartInstallingSolutionMessage" xml:space="preserve">
+    <value>{0} the solution for the {1} Organization.</value>
+  </data>
+  <data name="StartMessage" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="StartModifingEntitiesMessage" xml:space="preserve">
+    <value>{0} the customizations for the {1} entity.</value>
+  </data>
+  <data name="StartModifingOrgsMessage" xml:space="preserve">
+    <value>{0} the updates for the {1} Organization.</value>
+  </data>
+  <data name="StartPrivilegesMessage" xml:space="preserve">
+    <value>{0} the privilege updates for the {1} database.</value>
+  </data>
+  <data name="StartPublishingMessage" xml:space="preserve">
+    <value>Publishing the metadata changes ...</value>
+  </data>
+  <data name="StartRegistryUpdateMessage" xml:space="preserve">
+    <value>Updating Registry key '{0}'</value>
+  </data>
+  <data name="StartRemovingIsvExtensionPrivilegeMessage" xml:space="preserve">
+    <value>Removing the ISV Extension Privilege from the {0} role</value>
+  </data>
+  <data name="StartRemovingPrivilegeMessage" xml:space="preserve">
+    <value>Removing the {0} privilege from the {1} role</value>
+  </data>
+  <data name="StartRemovingRoleMessage" xml:space="preserve">
+    <value>Deleting the Dynamics Integration role</value>
+  </data>
+  <data name="StartRenamingMessage" xml:space="preserve">
+    <value>Renaming the existing {0}s</value>
+  </data>
+  <data name="StartRetrievingEntityMetadata" xml:space="preserve">
+    <value>Retrieving all entity metadata</value>
+  </data>
+  <data name="StartSettingAccountNumberRequirementMessage" xml:space="preserve">
+    <value>Setting requirement level for account number.</value>
+  </data>
+  <data name="StartSettingAddressRequirementMessage" xml:space="preserve">
+    <value>Setting requirement level for address 1 name on {0}</value>
+  </data>
+  <data name="StartSettingDecimalPrecisionMessage" xml:space="preserve">
+    <value>Setting product decimal precision.</value>
+  </data>
+  <data name="StartSettingDefaultAddress2ShippingMethodMessage" xml:space="preserve">
+    <value>Setting default value for address 2 {0} on {1}</value>
+  </data>
+  <data name="StartSettingGroupMembershipMessage" xml:space="preserve">
+    <value>Attempting to set Group membership for: {0}</value>
+  </data>
+  <data name="StartSettingUserPropertiesMessage" xml:space="preserve">
+    <value>Setting the 'Is Integration User' and 'Access mode' properties on the "{0}" user</value>
+  </data>
+  <data name="ThreadExceptionCaption" xml:space="preserve">
+    <value>Threading Exception</value>
+  </data>
+  <data name="UnhandledExceptionMessage" xml:space="preserve">
+    <value>Unhandled app domain exception caught.</value>
+  </data>
+  <data name="UnhandledThreadExceptionMessage" xml:space="preserve">
+    <value>Unhandled thread exception caught. {0}</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>User Name: {0}</value>
+  </data>
+  <data name="UserNameMatchExceptionMessage" xml:space="preserve">
+    <value>When configuring Microsoft Dynamics CRM organizations, the CRM System Administrator and Crm IntegrationUser accounts must be different.</value>
+  </data>
+  <data name="UserNotFoundExceptionMessage" xml:space="preserve">
+    <value>Could not retrieve the systemuser record for the supplied Microsoft Dynamics CRM Integration account: '{0}'</value>
+  </data>
+</root>

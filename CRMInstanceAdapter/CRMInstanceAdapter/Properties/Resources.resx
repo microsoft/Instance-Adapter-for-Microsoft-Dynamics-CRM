@@ -1,0 +1,592 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccountObjectProviderDisplayName" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="AccountObjectProviderName" xml:space="preserve">
+    <value>AccountObjectProvider</value>
+  </data>
+  <data name="AddingValueExceptionMessage" xml:space="preserve">
+    <value>ERROR: Unable to add {0}  Exception:   {1}</value>
+  </data>
+  <data name="AddressIntegrationKeyPropertyInvalidMessage" xml:space="preserve">
+    <value>The supplied address integration key property was null or empty</value>
+  </data>
+  <data name="ArgumentNullExceptionMessage" xml:space="preserve">
+    <value>One or more parameters were null</value>
+  </data>
+  <data name="AttributeNotFoundOnDynamicEntityExceptionMessage" xml:space="preserve">
+    <value>Attribute '{0}' was not found on entity {1}.  Please verify that the {1} entity contains the {0} attribute.</value>
+  </data>
+  <data name="BinaryComparisonNotSupportedExceptionMessage" xml:space="preserve">
+    <value>The BinaryComparisonOperator {0} is not supported at this time.</value>
+  </data>
+  <data name="BindingIndexExceptionMessage" xml:space="preserve">
+    <value>No binding index was found for the type {0}.</value>
+  </data>
+  <data name="CertificateNotFoundExceptionMessage" xml:space="preserve">
+    <value>Cannot find the "{0}" certificate in the "{1}" user's local certificate store.</value>
+  </data>
+  <data name="CertificateNotValidExceptionMessage" xml:space="preserve">
+    <value>The certificate supplied did not pass required validation.</value>
+  </data>
+  <data name="CertificateNullExceptionMessage" xml:space="preserve">
+    <value>Cannot Retrieve Ticket because of a null certificate</value>
+  </data>
+  <data name="ComplexTypeNotFoundExceptionMessage" xml:space="preserve">
+    <value>The ComplexType for the supplied entity: {0} was not found in the {1}.config file.</value>
+  </data>
+  <data name="ConfiguredOrganizationExceptionMessage" xml:space="preserve">
+    <value>Please run the Microsoft Dynamics CRM Configuration Utility to configure the {0} organization to use the Microsoft Dynamics CRM Adapter</value>
+  </data>
+  <data name="ConnectionValidationExceptionMessage" xml:space="preserve">
+    <value>A connection to the Microsoft Dynamics CRM Discovery Web Service could not be validated using the "{0}" user name and the "{1}" discovery service URL.</value>
+  </data>
+  <data name="ContactObjectProviderDisplayName" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="ContactObjectProviderName" xml:space="preserve">
+    <value>ContactObjectProvider</value>
+  </data>
+  <data name="CreatePriceLevelExceptionMessage" xml:space="preserve">
+    <value>Failed to create price level {0}</value>
+  </data>
+  <data name="CreateProductPriceLevelExceptionMessage" xml:space="preserve">
+    <value>Failed to create a product price level for product {0} on price level {1}</value>
+  </data>
+  <data name="CRMAdapterDisplayName" xml:space="preserve">
+    <value>Microsoft Dynamics Dynamic CRM</value>
+  </data>
+  <data name="CRMAdapterName" xml:space="preserve">
+    <value>DynamicCRM</value>
+  </data>
+  <data name="CRMAdapterSettingsConfigDesc" xml:space="preserve">
+    <value>Configure Microsoft Dynamics CRM</value>
+  </data>
+  <data name="CRMAdapterSettingsConfigDisplayName" xml:space="preserve">
+    <value>Configuration utility</value>
+  </data>
+  <data name="CRMAdapterSettingsDiscoveryServiceUrlDesc" xml:space="preserve">
+    <value>The URL to the Microsoft Dynamics CRM Discovery Service, this can be found in Dynamics CRM under Settings \ Customizations \ Developer Resources</value>
+  </data>
+  <data name="CRMAdapterSettingsDiscoveryServiceUrlDisplayName" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="CRMAdapterSettingsDomainDesc" xml:space="preserve">
+    <value>The Domain that the Microsoft Dynamics CRM host belongs to (Enter crm.dynamics.com for CRM Online)</value>
+  </data>
+  <data name="CRMAdapterSettingsDomainDisplayName" xml:space="preserve">
+    <value>Domain </value>
+  </data>
+  <data name="CRMAdapterSettingsIntegrationUserId" xml:space="preserve">
+    <value>The systemuser systemuserid for the INTEGRATION user for a company in Microsoft Dynamics CRM</value>
+  </data>
+  <data name="CRMAdapterSettingsIsOffice365Desc" xml:space="preserve">
+    <value>True if the instance of CRM is associated to Office 365</value>
+  </data>
+  <data name="CRMAdapterSettingsIsOffice365DisplayName" xml:space="preserve">
+    <value>Office 365 Organization</value>
+  </data>
+  <data name="CRMAdapterSettingsOrganizationDisplayName" xml:space="preserve">
+    <value>Organization</value>
+  </data>
+  <data name="CRMAdapterSettingsPortDesc" xml:space="preserve">
+    <value>The Microsoft Dynamics CRM Discovery Service Role port (Leave blank for CRM Online)</value>
+  </data>
+  <data name="CRMAdapterSettingsPortDisplayName" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="CRMAdapterSettingsServerNameDesc" xml:space="preserve">
+    <value>The Microsoft Dynamics CRM Discovery Service Role server name (Enter dev.crm.dynamics.com for CRM Online)</value>
+  </data>
+  <data name="CRMAdapterSettingsServerNameDisplayName" xml:space="preserve">
+    <value>Discovery Server</value>
+  </data>
+  <data name="CRMAdapterSettingsUserNameDesc" xml:space="preserve">
+    <value>Enter the Microsoft Dynamics CRM Integration account user name.  This should be a user who is not in the System Administrator role</value>
+  </data>
+  <data name="CRMAdapterSettingsUserNameDescription" xml:space="preserve">
+    <value>This user must be a valid user in Microsoft Dynamics CRM</value>
+  </data>
+  <data name="CRMAdapterSettingsUserNameDisplayName" xml:space="preserve">
+    <value>User Name</value>
+  </data>
+  <data name="CRMAdapterSettingsUserPasswordDesc" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="CRMAdapterSettingsUserPasswordDisplayName" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="CRMAdapterSettingsWebServiceUrlDescription" xml:space="preserve">
+    <value>The URL for the Microsoft Dynamics CRM 2011 Discovery Web Service.  This can be found in Microsoft Dynamics CRM under Settings &gt; Customizations &gt; Developer Resources</value>
+  </data>
+  <data name="CRMAdapterSettingsWebServiceUrlDisplayName" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="CrmDefaultLabel" xml:space="preserve">
+    <value>CRM Default</value>
+  </data>
+  <data name="CrmDuplicateUoMExceptionMessage" xml:space="preserve">
+    <value>A Unit named {0} already exists in the specified Unit Group which may or may not have the same Base Unit.  Microsoft Dynamics CRM does not currently permit Units to have the same name when they belong to the same Unit Group.</value>
+  </data>
+  <data name="CRMOnlineHostName" xml:space="preserve">
+    <value>(Online Host Name)</value>
+  </data>
+  <data name="CRMOnLineOnly" xml:space="preserve">
+    <value>(On-Line Only)</value>
+  </data>
+  <data name="CrmOnlineUserNotConfiguredExceptionMessage" xml:space="preserve">
+    <value>The "{0}" user has not been configured to be the integration user or they do not have their access mode set to "Non-interactive"</value>
+  </data>
+  <data name="CRMOnPremiseOnly" xml:space="preserve">
+    <value>(On-Premise Only)</value>
+  </data>
+  <data name="CrmServiceCreationExceptionMessage" xml:space="preserve">
+    <value>Exception while trying to create an instance of the Dynamics CRM web service</value>
+  </data>
+  <data name="CurrencyObjectProviderDisplayName" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="CurrencyObjectProviderName" xml:space="preserve">
+    <value>CurrencyObjectProvider</value>
+  </data>
+  <data name="CurrencyRetrievalExceptionMessage" xml:space="preserve">
+    <value>Unable to retrieve base currency fo the {0} organization</value>
+  </data>
+  <data name="DeploymentServiceCreationExceptionMessage" xml:space="preserve">
+    <value>Exception while trying to create an instance of the Dynamics CRM deployment service</value>
+  </data>
+  <data name="DictionaryForComplexTypeMappingNotInitializedProperly" xml:space="preserve">
+    <value>The Dictionary&lt;string, object&gt; supplied contains no entries.</value>
+  </data>
+  <data name="DictionaryForKeyNotInitializedProperly" xml:space="preserve">
+    <value>The Dictionary&lt;string, object&gt; supplied contains more than one entry.</value>
+  </data>
+  <data name="DiscountTypeObjectProviderDisplayName" xml:space="preserve">
+    <value>Discount List</value>
+  </data>
+  <data name="DiscountTypeObjectProviderDisplayName1" xml:space="preserve">
+    <value>Discount List</value>
+  </data>
+  <data name="DiscountTypeObjectProviderName" xml:space="preserve">
+    <value>DiscountTypeObjectProvider</value>
+  </data>
+  <data name="DiscoveryServiceCreationExceptionMessage" xml:space="preserve">
+    <value>Exception while trying to create an instance of the Dynamics CRM discovery service</value>
+  </data>
+  <data name="DuplicateDetected" xml:space="preserve">
+    <value>Multiple {0}s were found meeting the duplicate detection rules.</value>
+  </data>
+  <data name="DynamicObjectProviderDisplayName" xml:space="preserve">
+    <value>Dynamic</value>
+  </data>
+  <data name="DynamicObjectProviderName" xml:space="preserve">
+    <value>DynamicObjectProvider</value>
+  </data>
+  <data name="EndpointVersionNotFoundExceptionMessage" xml:space="preserve">
+    <value>The specified endpoint version: {0} was not found.</value>
+  </data>
+  <data name="EntityReferenceMappingNoResultsExceptionMessage" xml:space="preserve">
+    <value>The CrmReference mapping query returned no results for property: {0} with {1} = {2}.</value>
+  </data>
+  <data name="EntityReferenceMappingTooManyResultsExceptionMessage" xml:space="preserve">
+    <value>The CrmReference mapping query returned too many results for property: {0} with {1} = {2}.</value>
+  </data>
+  <data name="ErpSystemUserObjectProviderDisplayName" xml:space="preserve">
+    <value>ERP System User</value>
+  </data>
+  <data name="ErpSystemUserObjectProviderName" xml:space="preserve">
+    <value>ErpSystemUserObjectProvider</value>
+  </data>
+  <data name="GetQueryExpressionEntityNameExceptionMessage" xml:space="preserve">
+    <value>The EntityName supplied to GetQueryExpression is null or empty.</value>
+  </data>
+  <data name="GetQueryExpressionQueryPropertyExceptionMessage" xml:space="preserve">
+    <value>The QueryProperty supplied to GetQueryExpression is null or empty.</value>
+  </data>
+  <data name="GetUnitQueryExpressionScheduleIdExceptionMessage" xml:space="preserve">
+    <value>The ScheduleId supplied to GetUnitQueryExpression is null or empty.</value>
+  </data>
+  <data name="GetUnitQueryExpressionUnitNameExceptionMessage" xml:space="preserve">
+    <value>The UnitName supplied to GetUnitQueryExpression is null or empty.</value>
+  </data>
+  <data name="IntegradedEntityLookupNotFound" xml:space="preserve">
+    <value>The {0} with id {1} was not found to have a value for it's dynamics_integrationkey attribute when looking up the {2} property.</value>
+  </data>
+  <data name="IntegradedEntityNotFound" xml:space="preserve">
+    <value>No {0} was found with a dynamics_integrationkey of {1} for the field {2}.</value>
+  </data>
+  <data name="IntegrationKeyEntryMissingFromDictionary" xml:space="preserve">
+    <value>The Dictionary&lt;string, object&gt; provided does not contain an entry for the "IntegrationKey" key.</value>
+  </data>
+  <data name="InvalidADUserName" xml:space="preserve">
+    <value>Active Directory accounts must be provided in the form :"Domain\User"</value>
+  </data>
+  <data name="InvalidCRMAdapterCastException" xml:space="preserve">
+    <value>The Adapter is not of type CRM2011Adapter.</value>
+  </data>
+  <data name="InvalidDictionaryCastException" xml:space="preserve">
+    <value>destinationObject is not of type Dictionary&lt;string, object&gt;</value>
+  </data>
+  <data name="InvalidDomainExceptionMessage" xml:space="preserve">
+    <value>The Domain cannot be empty or blank</value>
+  </data>
+  <data name="InvalidEntityCastException" xml:space="preserve">
+    <value>The supplied ObjectContainer does not contain an instance of DynamicEntity.</value>
+  </data>
+  <data name="InvalidEntitySupplied" xml:space="preserve">
+    <value>The DynamicEntity which was supplied does not have it's "Name" property set.</value>
+  </data>
+  <data name="InvalidKeyCastException" xml:space="preserve">
+    <value>key in not of type CrmService.Key</value>
+  </data>
+  <data name="InvalidObjectProviderConfigPath" xml:space="preserve">
+    <value>"Configuration file for the {0} is not present in the {1} directory."</value>
+    <comment>This error occurs when an object provider's configuration file cannot be found. An end user should not see this msg, but it may show up in a log. {0} is the name of the ObjectProvider whose config was not found, {1} is the directory the program looked in for the config.</comment>
+  </data>
+  <data name="InvalidPropertySupplied" xml:space="preserve">
+    <value>The MappedProperty: {0} which was supplied is not mapped in this provider's configuration file for the {1} MappedObject's entry.</value>
+  </data>
+  <data name="InvalidUserNameExceptionMessage" xml:space="preserve">
+    <value>The User Name cannot be empty or blank</value>
+  </data>
+  <data name="InvoiceObjectProviderDisplayName" xml:space="preserve">
+    <value>Invoice</value>
+  </data>
+  <data name="InvoiceObjectProviderName" xml:space="preserve">
+    <value>InvoiceObjectProvider</value>
+  </data>
+  <data name="InvoiceObjectProviderName1" xml:space="preserve">
+    <value>InvoiceObjectProvider</value>
+  </data>
+  <data name="KeyForLookupIsNullOrEmpty" xml:space="preserve">
+    <value>d is null or empty.</value>
+  </data>
+  <data name="MetadataClientPicklistExceptionMessage" xml:space="preserve">
+    <value>ERROR: Unable to contact CRM Metadata Soap Client. Picklist for Entity {0} is not synced  Exception: {1}</value>
+  </data>
+  <data name="MetadataCreationExceptionMessage" xml:space="preserve">
+    <value>Exception while trying to create an instance of the Dynamics CRM metadata service</value>
+  </data>
+  <data name="MultipleDynamicEntitiesReturnedExceptionMessage" xml:space="preserve">
+    <value>Multiple {0} entities were found with the attribute: {1} set to value: {2}.</value>
+  </data>
+  <data name="MultipleInvoiceDetailsExceptionMessage" xml:space="preserve">
+    <value>Multiple Invoice Details returned.</value>
+  </data>
+  <data name="MultipleOrderDetailsExceptionMessage" xml:space="preserve">
+    <value>Multiple Order Details returned.</value>
+  </data>
+  <data name="MultipleProductPriceLevelExceptionMessage" xml:space="preserve">
+    <value>Multiple product price levels were found.</value>
+  </data>
+  <data name="MultipleProductsReturnedExceptionMessage" xml:space="preserve">
+    <value>Multiple products were found with the product number : {0} and the dynamics_integrationkey {0}</value>
+  </data>
+  <data name="MultipleQuoteDetailsExceptionMessage" xml:space="preserve">
+    <value>Multiple Quote Details returned.</value>
+  </data>
+  <data name="MultipleUoMsReturnedExceptionMessage" xml:space="preserve">
+    <value>Multiple units were found with the name : {0} and the Unit Group Id: {1}</value>
+  </data>
+  <data name="NoDeletedDynamicEntitiesFoundExceptionMessage" xml:space="preserve">
+    <value>No deleted {0} entities were found with the attribute: {1} set to value: {2}.</value>
+  </data>
+  <data name="NoIntegratedProductsToAddFoundExceptionMessage" xml:space="preserve">
+    <value>Could not add the Substitute or Kit Component because no integrated products were found with the dynamics_integrationkey of: {0}</value>
+  </data>
+  <data name="NoIntegratedProductsToRemoveFoundExceptionMessage" xml:space="preserve">
+    <value>Could not remove the Substitute or Kit Component because none were found with the dynamics_integrationkey of: {0}</value>
+  </data>
+  <data name="NonIntegratedProductExceptionMessage" xml:space="preserve">
+    <value>The product, {0},  which was supplied on the product price level has not been integrated yet, and must be before price list entries can be created for it.</value>
+  </data>
+  <data name="NonIntegratedProductSuppliedExceptionMessage" xml:space="preserve">
+    <value>The product '{0}' has not been integrated yet, or no longer exists.</value>
+  </data>
+  <data name="NoOrganizationsExceptionMessage" xml:space="preserve">
+    <value>Could not retrieve any Organizations</value>
+  </data>
+  <data name="NullICriterionExceptionMessage" xml:space="preserve">
+    <value>The ICriterion instance supplied is null</value>
+  </data>
+  <data name="NullRequestExceptionMessage" xml:space="preserve">
+    <value>The Request was null</value>
+  </data>
+  <data name="ObjectProviderSuffix" xml:space="preserve">
+    <value>ObjectProvider</value>
+  </data>
+  <data name="OrderObjectProviderDisplayName" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="OrderObjectProviderName" xml:space="preserve">
+    <value>OrderObjectProvider</value>
+  </data>
+  <data name="OrganizationNotFoundExceptionMessage" xml:space="preserve">
+    <value>The specified organization: {0} was not found.</value>
+  </data>
+  <data name="ParamterInvalidExceptionMessage" xml:space="preserve">
+    <value>An invalid value was supplied for a required parameter.</value>
+  </data>
+  <data name="ParamterNullExceptionMessage" xml:space="preserve">
+    <value>A parameter that is required to be non-null was supplied with a null value.</value>
+  </data>
+  <data name="PicklistObjectProviderDisplayName" xml:space="preserve">
+    <value>Picklist</value>
+  </data>
+  <data name="PicklistObjectProviderName" xml:space="preserve">
+    <value>PicklistObjectProvider</value>
+  </data>
+  <data name="PicklistValueNotFound" xml:space="preserve">
+    <value>Name: {0} not found in Picklist: {1} on entity: {2}.</value>
+  </data>
+  <data name="PriceLevelObjectProviderDisplayName" xml:space="preserve">
+    <value>Price List</value>
+  </data>
+  <data name="PriceLevelObjectProviderName" xml:space="preserve">
+    <value>PriceLevelObjectProvider</value>
+  </data>
+  <data name="ProductObjectProviderDisplayName" xml:space="preserve">
+    <value>Product</value>
+  </data>
+  <data name="ProductObjectProviderName" xml:space="preserve">
+    <value>ProductObjectProvider</value>
+  </data>
+  <data name="PublishExceptionMessage" xml:space="preserve">
+    <value>ERROR: Unable to publish CRM metadata Exception: {0}</value>
+  </data>
+  <data name="PublishingMessage" xml:space="preserve">
+    <value>Publishing Metadata Changes to CRM</value>
+  </data>
+  <data name="PublishSucceeded" xml:space="preserve">
+    <value>SUCCEED: Published Metadata Changes to CRM</value>
+  </data>
+  <data name="QueryNullOrEmptyExceptionMessage" xml:space="preserve">
+    <value>query cannot be null or empty.</value>
+  </data>
+  <data name="QuoteObjectProviderDisplayName" xml:space="preserve">
+    <value>Quote</value>
+  </data>
+  <data name="QuoteObjectProviderName" xml:space="preserve">
+    <value>QuoteObjectProvider</value>
+  </data>
+  <data name="ReadDeletedKeysNotImplementedExceptionMessage" xml:space="preserve">
+    <value>ReadDeletedObjectKeys is not implemented for this object provider.</value>
+  </data>
+  <data name="RenamingValueExceptionMessage" xml:space="preserve">
+    <value>WARNING: Unable to rename "{0}"  Exception:   {1}</value>
+  </data>
+  <data name="RenamingValueMessage" xml:space="preserve">
+    <value>Renaming "{0}" to "{1}"</value>
+  </data>
+  <data name="RetrieveAllCompaniesExceptionMessage" xml:space="preserve">
+    <value>The following exception occurred while attempting to retrieve all companies: {0}</value>
+  </data>
+  <data name="RetrieveConfiguredCompanyExceptionMessage" xml:space="preserve">
+    <value>The following exception occurred while attempting to retrieve the "{0}" configured company: {1}</value>
+  </data>
+  <data name="RetrievePriceLevelExceptionMessage" xml:space="preserve">
+    <value>Failed to retrieve a price level with transaction currency {0}</value>
+  </data>
+  <data name="RetrievePriceLevelIdExceptionMessage" xml:space="preserve">
+    <value>Failed to retrieve a price level with id {0}</value>
+  </data>
+  <data name="SettingsErrorMesssage" xml:space="preserve">
+    <value>{0} is not set.</value>
+  </data>
+  <data name="SuppliedKeyTypeExceptionMessage" xml:space="preserve">
+    <value>The type of the object supplied to the ReadObject method is not of type Key or string.</value>
+  </data>
+  <data name="UnsupportedLookupMappingExceptionMessage" xml:space="preserve">
+    <value>Property: {0} not supported for Lookup value mapping at this time.</value>
+  </data>
+  <data name="UnsupportedMappedObjectExceptionMessage" xml:space="preserve">
+    <value>The supplied value ({1}) for MappedObject is not supported at this time.</value>
+  </data>
+  <data name="UoMObjectProviderDisplayName" xml:space="preserve">
+    <value>Unit</value>
+  </data>
+  <data name="UoMObjectProviderName" xml:space="preserve">
+    <value>UoMObjectProvider</value>
+  </data>
+  <data name="UoMObjectProviderName1" xml:space="preserve">
+    <value>UoMObjectProvider</value>
+  </data>
+  <data name="UoMScheduleObjectProviderDisplayName" xml:space="preserve">
+    <value>Unit Group</value>
+  </data>
+  <data name="UoMScheduleObjectProviderName" xml:space="preserve">
+    <value>UoMScheduleObjectProvider</value>
+  </data>
+  <data name="UomWithProductAndScheduleIdExceptionMessage" xml:space="preserve">
+    <value>{0} on defaultunitschedule with id "{1}" for product "{2}"</value>
+  </data>
+  <data name="UpdateProductPriceLevelExceptionMessage" xml:space="preserve">
+    <value>Failed to update a product price level for product {0} on price level {1}</value>
+  </data>
+  <data name="UserNameFormatExceptionMessage" xml:space="preserve">
+    <value>The user name supplied is not in the format: "Domain\UserName". You supplied: {0}.</value>
+  </data>
+  <data name="UserNotEnabledInDirectory" xml:space="preserve">
+    <value>The user: "{0}" is not enabled in the "{1}" Domain.</value>
+  </data>
+  <data name="UserNotFoundExceptionMessage" xml:space="preserve">
+    <value>Could not retrieve the system user "{0}"</value>
+  </data>
+  <data name="UserNotFoundInDirectory" xml:space="preserve">
+    <value>The user: "{0}" was not found in the "{1}" Domain.</value>
+  </data>
+  <data name="ValueExistsMessage" xml:space="preserve">
+    <value>"{0}" is not added because "{0}" already exists</value>
+  </data>
+  <data name="WIFInstallationNotFoundExceptionMessage" xml:space="preserve">
+    <value>Required Windows Identity Foundation installation not found.  See http://www.microsoft.com/download/en/details.aspx?id=17331 for more information</value>
+  </data>
+  <data name="WlidDeviceRegistrationExceptionMessage" xml:space="preserve">
+    <value>Failed to register the device "{0}" with exception "{1}"</value>
+  </data>
+  <data name="WlidFederationMetadataExceptionMessage" xml:space="preserve">
+    <value>Failed to retrieve the Federation metadata document at "{0}" with exception: "{1}"</value>
+  </data>
+  <data name="WlidTicketDeviceTokenExceptionMessage" xml:space="preserve">
+    <value>Failed to retrieve a device authorization token for "{0}" with exception: "{1}"</value>
+  </data>
+  <data name="WlidTicketUserTokenExceptionMessage" xml:space="preserve">
+    <value>Failed to retrieve a user authorization token for "{0}" with exception: "{1}"</value>
+  </data>
+  <data name="WlidTicketXpathExceptionMessage" xml:space="preserve">
+    <value>Failed to retrieve an XmlNode from {0} at "{1}"</value>
+  </data>
+  <data name="DynamicCRMDestinationAdapterDisplayName" xml:space="preserve">
+    <value>Dynamic CRM 2011 Adapter Destination </value>
+  </data>
+  <data name="DynamicCRMDestinationAdapterName" xml:space="preserve">
+    <value>DynamicCRM2011Destination</value>
+  </data>
+  <data name="DynamicCRMSourceAdapterDisplayName" xml:space="preserve">
+    <value>Dynamic CRM 2011 Adapter Source</value>
+  </data>
+  <data name="DynamicCRMSourceAdapterName" xml:space="preserve">
+    <value>DynamicCRM2011Source</value>
+  </data>
+  <data name="InvalidGlobalOptionSet" xml:space="preserve">
+    <value>The global option set {0} was not found on destination organization.</value>
+  </data>
+</root>
