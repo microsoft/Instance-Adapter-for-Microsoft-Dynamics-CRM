@@ -1,0 +1,2 @@
+# InstanceAdapterForMicrosoftDynamicsCRM
+This is an additional adapter for use with Connector for Microsoft Dynamics that allows for the synchronization of data between two Microsoft Dynamics CRM 2011 or Dynamics CRM 2013 organizations.  The adapter allows for communication between two endpoints that exist on any authentication/hosting environment (on-premises, online, IFD, etc.)  This means that you can leverage this new adapter to move Microsoft Dynamics CRM 2011 or Dynamics CRM 2013 data between test and production servers or from on-premises to the cloud.
