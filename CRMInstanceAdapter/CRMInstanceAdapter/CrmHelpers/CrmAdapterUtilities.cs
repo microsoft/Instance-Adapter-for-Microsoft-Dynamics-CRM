@@ -1,33 +1,23 @@
-﻿//-----------------------------------------------------------------------------------------------------
-// <copyright company="Microsoft Corporation" file="CRM2011AdapterUtilities.cs"> All Rights Reserved.
-// Information Contained Herein is Proprietary and Confidential.</copyright>
-// <summary>This file contains the CRM Adapter Utilities.</summary>
-//-----------------------------------------------------------------------------------------------------
-
-#region Using Statements
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Xml;
-using Microsoft.Dynamics.Integration.AdapterAbstractionLayer;
-using Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Properties;
-using Microsoft.Dynamics.Integration.Common;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Metadata;
-using Microsoft.Xrm.Sdk.Query;
-
-#endregion
-
-namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
+﻿namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
 {
+    using AdapterAbstractionLayer;
+    using Properties;
+    using Common;
+    using Xrm.Sdk;
+    using Xrm.Sdk.Messages;
+    using Xrm.Sdk.Metadata;
+    using Xrm.Sdk.Query;
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+    using System.Xml;
+
     public static class CRM2011AdapterUtilities
     {
-        #region Fields
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "Guid fields cannot be made constant.")]
         public const string DynamicsIntegrationKey = "dynamics_integrationkey";
         public const string DeletedPrefix = "dynamics_deleted";
         public const string DynamicsIntegrationReady = "dynamics_isreadyforintegration";
@@ -58,7 +48,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
 
         private static string[] unmappedLookupFields = { "createdby", "modifiedby" };
         private static string[] specialAddressPicklists = { "shippingmethodcode", "addresstypecode", "freighttermscode" };
-        #endregion
 
         /// <summary>
         /// Gets the array of entity names that have a dynamics_integrationkey property added to them
@@ -96,8 +85,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
             return specialAddressPicklists;
         }
 
-        #region Validation Methods
-
         /// <summary>
         /// Validates that a product is not new when retrieving from the product catalog
         /// </summary>
@@ -128,9 +115,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
                 throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.DictionaryForComplexTypeMappingNotInitializedProperly)) { ExceptionId = ErrorCodes.InvalidDictionary };
             }
         }
-        #endregion
 
-        #region QueryExpression Helpers
         /// <summary>
         /// Gets a <c>QueryExpression</c> instance with it's properties set to the values supplied
         /// </summary>
@@ -289,9 +274,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
 
             return queryHelper;
         }
-        #endregion
-
-        #region CRM Data Type Mapping Methods
 
         /// <summary>
         /// Gets a <c>Picklist</c> instance who's values are set based on the paramters provided.
@@ -431,8 +413,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
             return new FieldDefinition() { Name = name, TypeDefinition = simpleType, DisplayName = displayName, IsRequired = isRequired, TypeName = simpleType.Name, IsReadOnly = isReadOnly };
 
         }
-
-        #endregion
 
         /// <summary>
         /// Sets the properties of an <c>object</c> that has a relationship to another <c>BusinessEntity</c> to the values conatined in the supplied <c>Dictionary</c>.
@@ -740,7 +720,5 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
 
             return new FieldDefinition() { Name = name, DisplayName = displayName, IsReadOnly = isReadOnly, IsRequired = isRequired, TypeName = typeName };
         }
-
-
     }
 }

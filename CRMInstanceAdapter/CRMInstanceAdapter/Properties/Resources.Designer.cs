@@ -61,24 +61,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account.
-        /// </summary>
-        internal static string AccountObjectProviderDisplayName {
-            get {
-                return ResourceManager.GetString("AccountObjectProviderDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to AccountObjectProvider.
-        /// </summary>
-        internal static string AccountObjectProviderName {
-            get {
-                return ResourceManager.GetString("AccountObjectProviderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ERROR: Unable to add {0}  Exception:   {1}.
         /// </summary>
         internal static string AddingValueExceptionMessage {
@@ -493,24 +475,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Currency.
-        /// </summary>
-        internal static string CurrencyObjectProviderDisplayName {
-            get {
-                return ResourceManager.GetString("CurrencyObjectProviderDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CurrencyObjectProvider.
-        /// </summary>
-        internal static string CurrencyObjectProviderName {
-            get {
-                return ResourceManager.GetString("CurrencyObjectProviderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unable to retrieve base currency fo the {0} organization.
         /// </summary>
         internal static string CurrencyRetrievalExceptionMessage {
@@ -543,33 +507,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Properties {
         internal static string DictionaryForKeyNotInitializedProperly {
             get {
                 return ResourceManager.GetString("DictionaryForKeyNotInitializedProperly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Discount List.
-        /// </summary>
-        internal static string DiscountTypeObjectProviderDisplayName {
-            get {
-                return ResourceManager.GetString("DiscountTypeObjectProviderDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Discount List.
-        /// </summary>
-        internal static string DiscountTypeObjectProviderDisplayName1 {
-            get {
-                return ResourceManager.GetString("DiscountTypeObjectProviderDisplayName1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to DiscountTypeObjectProvider.
-        /// </summary>
-        internal static string DiscountTypeObjectProviderName {
-            get {
-                return ResourceManager.GetString("DiscountTypeObjectProviderName", resourceCulture);
             }
         }
         
@@ -853,33 +790,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invoice.
-        /// </summary>
-        internal static string InvoiceObjectProviderDisplayName {
-            get {
-                return ResourceManager.GetString("InvoiceObjectProviderDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to InvoiceObjectProvider.
-        /// </summary>
-        internal static string InvoiceObjectProviderName {
-            get {
-                return ResourceManager.GetString("InvoiceObjectProviderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to InvoiceObjectProvider.
-        /// </summary>
-        internal static string InvoiceObjectProviderName1 {
-            get {
-                return ResourceManager.GetString("InvoiceObjectProviderName1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to d is null or empty..
         /// </summary>
         internal static string KeyForLookupIsNullOrEmpty {
@@ -1051,24 +961,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order.
-        /// </summary>
-        internal static string OrderObjectProviderDisplayName {
-            get {
-                return ResourceManager.GetString("OrderObjectProviderDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OrderObjectProvider.
-        /// </summary>
-        internal static string OrderObjectProviderName {
-            get {
-                return ResourceManager.GetString("OrderObjectProviderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The specified organization: {0} was not found..
         /// </summary>
         internal static string OrganizationNotFoundExceptionMessage {
@@ -1123,42 +1015,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Price List.
-        /// </summary>
-        internal static string PriceLevelObjectProviderDisplayName {
-            get {
-                return ResourceManager.GetString("PriceLevelObjectProviderDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PriceLevelObjectProvider.
-        /// </summary>
-        internal static string PriceLevelObjectProviderName {
-            get {
-                return ResourceManager.GetString("PriceLevelObjectProviderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Product.
-        /// </summary>
-        internal static string ProductObjectProviderDisplayName {
-            get {
-                return ResourceManager.GetString("ProductObjectProviderDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ProductObjectProvider.
-        /// </summary>
-        internal static string ProductObjectProviderName {
-            get {
-                return ResourceManager.GetString("ProductObjectProviderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ERROR: Unable to publish CRM metadata Exception: {0}.
         /// </summary>
         internal static string PublishExceptionMessage {
@@ -1191,24 +1047,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Properties {
         internal static string QueryNullOrEmptyExceptionMessage {
             get {
                 return ResourceManager.GetString("QueryNullOrEmptyExceptionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Quote.
-        /// </summary>
-        internal static string QuoteObjectProviderDisplayName {
-            get {
-                return ResourceManager.GetString("QuoteObjectProviderDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to QuoteObjectProvider.
-        /// </summary>
-        internal static string QuoteObjectProviderName {
-            get {
-                return ResourceManager.GetString("QuoteObjectProviderName", resourceCulture);
             }
         }
         
@@ -1308,51 +1146,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Properties {
         internal static string UnsupportedMappedObjectExceptionMessage {
             get {
                 return ResourceManager.GetString("UnsupportedMappedObjectExceptionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unit.
-        /// </summary>
-        internal static string UoMObjectProviderDisplayName {
-            get {
-                return ResourceManager.GetString("UoMObjectProviderDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UoMObjectProvider.
-        /// </summary>
-        internal static string UoMObjectProviderName {
-            get {
-                return ResourceManager.GetString("UoMObjectProviderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UoMObjectProvider.
-        /// </summary>
-        internal static string UoMObjectProviderName1 {
-            get {
-                return ResourceManager.GetString("UoMObjectProviderName1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unit Group.
-        /// </summary>
-        internal static string UoMScheduleObjectProviderDisplayName {
-            get {
-                return ResourceManager.GetString("UoMScheduleObjectProviderDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UoMScheduleObjectProvider.
-        /// </summary>
-        internal static string UoMScheduleObjectProviderName {
-            get {
-                return ResourceManager.GetString("UoMScheduleObjectProviderName", resourceCulture);
             }
         }
         

@@ -1,8 +1,6 @@
 ﻿// =====================================================================
 //  This file is part of the Microsoft Dynamics CRM SDK code samples.
 //
-//  Copyright (C) Microsoft Corporation.  All rights reserved.
-//
 //  This source code is intended only as a supplement to Microsoft
 //  Development Tools and/or on-line documentation.  See these other
 //  materials for detailed information regarding Microsoft code samples.
@@ -13,19 +11,18 @@
 //  PARTICULAR PURPOSE.
 // =====================================================================
 
-//<snippetCrmServiceHelper>
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.ServiceModel.Description;
-using System.ServiceModel.Security;
-using Microsoft.Dynamics.Integration.AdapterAbstractionLayer;
-using Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Properties;
-using Microsoft.Xrm.Sdk.Client;
-using Microsoft.Xrm.Sdk.Discovery;
-
 namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
 {
+    using AdapterAbstractionLayer;
+    using Properties;
+    using Xrm.Sdk.Client;
+    using Xrm.Sdk.Discovery;
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.ServiceModel.Description;
+    using System.ServiceModel.Security;
+
     /// <summary>
     /// Provides server connection information.
     /// </summary>
@@ -39,7 +36,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
             this.serverUserName = userName;
         }
 
-        #region Inner classes
         /// <summary>
         /// Stores CRM server configuration information.
         /// </summary>
@@ -156,24 +152,15 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
                 return returnHashCode;
             }
         }
-        #endregion Inner classes
 
-        #region Internal properties
 
         internal List<CrmServerConfiguration> configurations = new List<CrmServerConfiguration>();
-
-        #endregion
-
-        #region Private Fields
 
         private CrmServerConfiguration config = new CrmServerConfiguration();
         private Uri serverAddress;
         private string serverUserName;
         private string serverPassword;
 
-        #endregion Private properties
-
-        #region Public methods
         /// <summary>
         /// Obtains the server connection information including the target organization's
         /// Uri and user login credentials from the user.
@@ -260,9 +247,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
             return null;
         }
 
-        #endregion Public methods
 
-        #region Private methods
         /// <summary>
         /// Obtains the authentication type of the CRM server.
         /// </summary>
@@ -353,7 +338,5 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
         {
             return DeviceIdManager.LoadOrRegisterDevice();
         }
-
-        #endregion Private methods
     }
 }

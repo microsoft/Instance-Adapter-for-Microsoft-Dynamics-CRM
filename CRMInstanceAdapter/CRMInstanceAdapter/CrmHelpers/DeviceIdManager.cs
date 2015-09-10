@@ -2,7 +2,6 @@
 //
 //  This file is part of the Microsoft Dynamics CRM SDK code samples.
 //
-//  Copyright (C) Microsoft Corporation.  All rights reserved.
 //
 //  This source code is intended only as a supplement to Microsoft
 //  Development Tools and/or on-line documentation.  See these other
@@ -14,43 +13,38 @@
 //  PARTICULAR PURPOSE.
 //
 // =====================================================================
-using System;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-using System.Security;
-using System.Security.Cryptography;
-using System.ServiceModel.Description;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
 {
+    using System;
+    using System.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
+    using System.IO;
+    using System.Net;
+    using System.Runtime.InteropServices;
+    using System.Runtime.Serialization;
+    using System.Security;
+    using System.Security.Cryptography;
+    using System.ServiceModel.Description;
+    using System.Text;
+    using System.Xml;
+    using System.Xml.Serialization;
+
     /// <summary>
     /// Management utility for the Device Id
     /// </summary>
     public static class DeviceIdManager
     {
-        #region Fields
         private static readonly Random RandomInstance = new Random();
-
         public const int MaxDeviceNameLength = 24;
         public const int MaxDevicePasswordLength = 24;
-        #endregion
 
-        #region Properties
         /// <summary>
         /// Indicates whether the registered device credentials should be persisted to the database
         /// </summary>
         public static bool PersistToFile { get; set; }
-        #endregion
 
-        #region Methods
         /// <summary>
         /// Loads the device credentials (if they exist).
         /// </summary>
@@ -187,9 +181,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
             //In all other cases the environment is either not applicable or it is a production system
             return null;
         }
-        #endregion
 
-        #region Private Methods
         private static void Serialize<T>(Stream stream, T value)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T), string.Empty);
@@ -293,26 +285,17 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
 
             return new string(value);
         }
-        #endregion
 
-        #region Private Classes
         private static class LiveIdConstants
         {
             public const string RegistrationEndpointUriFormat = @"https://login.live{0}.com/ppsecure/DeviceAddCredential.srf";
-
-            //public static readonly string LiveDeviceFileNameFormat = Path.Combine(
-            //    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "LiveDeviceID"),
-            //    "LiveDevice{0}.xml");
-
             public const string ValidDeviceNameCharacters = "0123456789abcdefghijklmnopqrstuvqxyz";
 
             //Consists of the list of characters specified in the documentation
             public const string ValidDevicePasswordCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^*()-_=+;,./?`~";
         }
-        #endregion
     }
 
-    #region Public Classes & Enums
     /// <summary>
     /// Indicates an error during registration
     /// </summary>
@@ -434,23 +417,17 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
         {
         }
 
-        #region Properties
         /// <summary>
         /// Error code that occurred during registration
         /// </summary>
         public DeviceRegistrationErrorCode RegistrationErrorCode { get; private set; }
-        #endregion
 
-        #region Methods
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
         }
-        #endregion
     }
 
-    #region Serialization Classes
-    #region DeviceRegistrationRequest Class
     [EditorBrowsable(EditorBrowsableState.Never)]
     [XmlRoot("DeviceAddRequest")]
     public sealed class DeviceRegistrationRequest
@@ -485,9 +462,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
         public DeviceRegistrationAuthentication Authentication { get; set; }
         #endregion
     }
-    #endregion
 
-    #region DeviceRegistrationClientInfo Class
     [EditorBrowsable(EditorBrowsableState.Never)]
     [XmlRoot("ClientInfo")]
     public sealed class DeviceRegistrationClientInfo
@@ -500,9 +475,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
         public string Version { get; set; }
         #endregion
     }
-    #endregion
 
-    #region DeviceRegistrationAuthentication Class
     [EditorBrowsable(EditorBrowsableState.Never)]
     [XmlRoot("Authentication")]
     public sealed class DeviceRegistrationAuthentication
@@ -515,9 +488,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
         public string Password { get; set; }
         #endregion
     }
-    #endregion
 
-    #region DeviceRegistrationResponse Class
     [EditorBrowsable(EditorBrowsableState.Never)]
     [XmlRoot("DeviceAddResponse")]
     public sealed class DeviceRegistrationResponse
@@ -536,9 +507,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
         public string ErrorSubCode { get; set; }
         #endregion
     }
-    #endregion
 
-    #region DeviceRegistrationResponse Class
     [EditorBrowsable(EditorBrowsableState.Never)]
     [XmlRoot("Error")]
     public sealed class DeviceRegistrationResponseError
@@ -581,9 +550,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
         public DeviceRegistrationErrorCode RegistrationErrorCode { get; private set; }
         #endregion
     }
-    #endregion
 
-    #region LiveDevice Class
     [EditorBrowsable(EditorBrowsableState.Never)]
     [XmlRoot("Data")]
     public sealed class LiveDevice
@@ -606,9 +573,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
         public string ClockSkew { get; set; }
         #endregion
     }
-    #endregion
 
-    #region DeviceUserName Class
     [EditorBrowsable(EditorBrowsableState.Never)]
     public sealed class DeviceUserName
     {
@@ -616,18 +581,13 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
         private SecureString _decryptedPassword;
         private bool _encryptedValueIsUpdated;
 
-        #region Constants
         private const string UserNamePrefix = "11";
-        #endregion
 
-        #region Constructors
         public DeviceUserName()
         {
             this.UserNameType = "Logical";
         }
-        #endregion
 
-        #region Properties
         [XmlAttribute("username")]
         public string DeviceName { get; set; }
 
@@ -688,9 +648,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
                 return DeviceIdManager.PersistToFile;
             }
         }
-        #endregion
 
-        #region Methods
         public ClientCredentials ToClientCredentials()
         {
             ClientCredentials credentials = new ClientCredentials();
@@ -814,9 +772,5 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
             securePassword.MakeReadOnly();
             return securePassword;
         }
-        #endregion
     }
-    #endregion
-    #endregion
-    #endregion
 }

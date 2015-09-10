@@ -31,7 +31,7 @@
         private object syncObject = new object();        
 
         /// <summary>
-        /// The default protected base constructor for creating a new instance of this class.
+        /// Initializes a new instance of the <see cref="CrmObjectProvider"/> class.
         /// </summary>
         protected CrmObjectProvider()
         {
@@ -43,13 +43,14 @@
                         try
                         {
                             return new Guid(key);
-                        }
-                        // the supplied key is not a Guid, so it will be returned as a string instead.
+                        }                        
                         catch (FormatException)
                         {
+                            // The supplied key is not a Guid, so it will be returned as a string instead.
                             return key;
                         }
                     }
+
                     throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.SuppliedKeyTypeExceptionMessage), new ArgumentException(Resources.SuppliedKeyTypeExceptionMessage, "key")) { ExceptionId = ErrorCodes.SuppliedKeyCastException };
                 });
         }
@@ -81,7 +82,7 @@
         }
 
         /// <summary>
-        /// Gets or sets a value indicating if this object provider allows for duplicate detection logic.
+        /// Gets or sets a value indicating whether this object provider allows for duplicate detection logic.
         /// </summary>
         protected bool DoesDetectDuplicates
         {
@@ -90,7 +91,7 @@
         }
 
         /// <summary>
-        /// Gets or sets a value indicating if this object provider is for an activity entity.
+        /// Gets or sets a value indicating whether this object provider is for an activity entity.
         /// </summary>
         protected bool IsActivityEntity
         {
@@ -121,15 +122,13 @@
             }
         }
 
-
         internal string KeyAttribute
         {
             get
             {
                 return this.IsActivityEntity != true ? this.ProvidedEntityName + "id" : "activityid";
             }
-        }
-        
+        }        
 
         /// <summary>
         /// Gets this <c>ObjectProvider</c>'s configuration file as an <c>ObjectDefinitionConfiguration</c> <c>object</c>.
@@ -156,7 +155,7 @@
                 }
                 catch (FileNotFoundException)
                 {
-                    //"CrmServerConfiguration file for the " + this.Name + " is not present in the " + filePath + " directory."
+                    // "CrmServerConfiguration file for the " + this.Name + " is not present in the " + filePath + " directory."
                     throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidObjectProviderConfigPath, new object[] { this.Name, filePath }));
                 }
 
@@ -167,13 +166,13 @@
         }
 
         /// <summary>
-        /// Gets an instance of the <c>DynamicsEntity</c> class that conatins either an instance of an object that 
+        /// Gets an instance of the <c>Entity</c> class that conatins either an instance of an object that 
         /// exists in the system or a new instance of one if the requested key is not present in the system.
         /// </summary>
-        /// <param name="queryProperty">The property on the <c>entity</c> to be querried</param>
+        /// <param name="queryProperty">The property on the <c>entity</c> to be queried</param>
         /// <param name="dictionary">The <c>Dictionary</c> that contains the data from the source system</param>
         /// <param name="entityName">The logical name of the entity type to get</param>
-        /// <returns>A <c>Entity</c> that conatins a new or existing instance of a <c>BusinessEntity</c></returns>
+        /// <returns>A <c>Entity</c> that contains a new or existing instance of a <c>BusinessEntity</c></returns>
         internal virtual Entity GetDynamicInstance(string queryProperty, Dictionary<string, object> dictionary, string entityName)
         {
             if (dictionary.ContainsKey(this.KeyAttribute))
@@ -188,11 +187,11 @@
         /// Gets an instance of the <c>DynamicsEntity</c> class that conatins either an instance of an object that 
         /// exists in the system or a new instance of one if the requested key is not present in the system.
         /// </summary>
-        /// <param name="queryProperty">The property on the <c>entity</c> to be querried</param>
+        /// <param name="queryProperty">The property on the <c>entity</c> to be queried</param>
         /// <param name="queryValue">The key to reference or to use as a new key if the system does not contain the key supplied.</param>
         /// <param name="entityName">The logical name of the entity type to get</param>
         /// <param name="attributes">The attributes to be returned on the <c>Entity</c> instance</param>
-        /// <returns>A <c>Entity</c> that conatins a new or existing instance of a <c>BusinessEntity</c></returns>
+        /// <returns>A <c>Entity</c> that contains a new or existing instance of a <c>BusinessEntity</c></returns>
         internal Entity GetDynamicInstance(string queryProperty, string queryValue, string entityName, params string[] attributes)
         {
             RetrieveMultipleResponse retrieveResponse = this.RetrieveMultipleDynamicEntities(queryValue, queryProperty, entityName, attributes);
@@ -230,11 +229,11 @@
         /// Gets an instance of the <c>DynamicsEntity</c> class that conatins either an instance of an object that 
         /// exists in the system or a new instance of one if the requested key is not present in the system.
         /// </summary>
-        /// <param name="queryProperty">The property on the <c>entity</c> to be querried</param>
+        /// <param name="queryProperty">The property on the <c>entity</c> to be queried</param>
         /// <param name="dictionary">The <c>Dictionary</c> that contains the data from the source system</param>
         /// <param name="entityName">The logical name of the entity type to get</param>
         /// <param name="criterion">An instance of an <c>ICriterion</c> to use in duplicate detection</param>
-        /// <returns>A <c>Entity</c> that conatins a new or existing instance of a <c>BusinessEntity</c></returns>
+        /// <returns>A <c>Entity</c> that contains a new or existing instance of a <c>BusinessEntity</c></returns>
         internal Entity GetDynamicInstance(string queryProperty, Dictionary<string, object> dictionary, string entityName, ICriterion criterion)
         {
             Entity returnedEntity = this.GetDynamicInstance(queryProperty, dictionary, entityName);
@@ -490,7 +489,7 @@
         /// <param name="returnedLookup">The <c>Lookup</c> to set the type property on.</param> 
         protected virtual void SetLookupType(FieldDefinition field, EntityReference returnedLookup)
         {
-            if(field == null || returnedLookup == null)
+            if (field == null || returnedLookup == null)
             {
                 throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage)) { ExceptionId = AdapterException.SystemExceptionGuid };
             }
@@ -525,8 +524,6 @@
             this.CallCrmExecuteWebMethod(request);            
         }
 
-
-        // TODO: Double check and remove if not needed.
         /// <summary>
         /// Issues an <c>UpdateCompoundRequest</c> to the target <c>CrmService</c>.
         /// </summary>
@@ -786,7 +783,7 @@
                 Entity entityToUpdate = ((EntityCollection)response.Results["DuplicateCollection"]).Entities[0];
                 foreach (string prop in target.Attributes.Keys)
                 {
-                    if(prop != this.KeyAttribute)
+                    if (prop != this.KeyAttribute)
                     {
                         entityToUpdate[prop] = target[prop];
                     }
@@ -802,9 +799,9 @@
         }
 
         /// <summary>
-        /// Sets the statecode for this instance.
+        /// Sets the state code for this instance.
         /// </summary>
-        /// <param name="entity">The <c>Entity</c> to set the statecode for.</param>
+        /// <param name="entity">The <c>Entity</c> to set the state code for.</param>
         protected void SetState(Entity entity)
         {
             if (entity != null && entity.Contains("statecode"))
@@ -839,7 +836,6 @@
         /// </summary>
         /// <param name="field">The field that is currently being set to a <c>EntityReference</c>.</param>
         /// <param name="mappedLookupObject">The <c>Dictionary</c> that contains the data for populating the returned <c>EntityReference</c>.</param>
-        /// <typeparam name="T">Any of the <c>EntityReference</c> implementation types.</typeparam>
         /// <returns>A new instance of a <c>EntityReference</c> object initialized with the proper values from the target system or null
         /// if the dynamics_integrationkey in the supplied <c>Dictionary</c> is null or empty.</returns> 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1")]
@@ -851,7 +847,7 @@
             }
             
             CRM2011AdapterUtilities.ValidateDictionary(mappedLookupObject);
-            EntityReference reference = GetReferenceInstanceType(field);
+            EntityReference reference = this.GetReferenceInstanceType(field);
             
             var lookupField = field.AdditionalAttributes.FirstOrDefault(x => x.Name == "LookupField");
             var lookupEntity = field.AdditionalAttributes.FirstOrDefault(x => x.Name == "LookupType");
@@ -862,7 +858,7 @@
 
             if (typeSplit.Count() > 1 && fieldSplit.Count() > 1)
             {
-                for(int i=0; i<typeSplit.Count(); i++)
+                for (int i = 0; i < typeSplit.Count(); i++)
                 {
                     typeFieldList.Add(new KeyValuePair<string, string>(typeSplit[i], fieldSplit[i]));
                 }
@@ -921,7 +917,9 @@
         protected EntityCollection RetrieveEntityReferenceValue(FieldDefinition field, XmlAttribute lookupName, XmlAttribute lookupFields, Dictionary<string,object> dictionary)
         {
             if (field.Name.Equals("attachmentid"))
+            {
                 return null;
+            }
 
             if(field.Name.Equals("ownerid"))
             {
@@ -930,6 +928,7 @@
                     lookupName.Value = "team";
                     lookupFields.Value = "teamid";
                 }
+
                 if (dictionary["LogicalName"].ToString() == "systemuser")
                 {
                     lookupName.Value = "systemuser";
@@ -937,21 +936,22 @@
                 }
             }
 
-
             RetrieveMultipleRequest retrieveRequest = new RetrieveMultipleRequest();
-
             if (lookupName.Value == "activitymimeattachment" && field.Name == "objectid")
+            {
                 return null;
-            //retrieveRequest.Query = CRM2011AdapterUtilities.GetQueryExpression("email", "activityid", dictionary["activityid"].ToString(), new string[] { "activityid" });
+            }
             else if (dictionary.ContainsKey(lookupFields.Value))
+            {
                 retrieveRequest.Query = CRM2011AdapterUtilities.GetQueryExpression(lookupName.Value, lookupFields.Value, dictionary[lookupFields.Value].ToString(), new string[] { lookupFields.Value });
+            }
             else
+            {
                 return null;
+            }
 
             var returned =  (RetrieveMultipleResponse)this.CallCrmExecuteWebMethod(retrieveRequest);
-
-            return returned.EntityCollection;
-            
+            return returned.EntityCollection;            
         }
 
         /// <summary>

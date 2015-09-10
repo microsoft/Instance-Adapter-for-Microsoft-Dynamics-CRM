@@ -117,12 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AccountObjectProviderDisplayName" xml:space="preserve">
-    <value>Account</value>
-  </data>
-  <data name="AccountObjectProviderName" xml:space="preserve">
-    <value>AccountObjectProvider</value>
-  </data>
   <data name="AddingValueExceptionMessage" xml:space="preserve">
     <value>ERROR: Unable to add {0}  Exception:   {1}</value>
   </data>
@@ -261,12 +255,6 @@
   <data name="CrmServiceCreationExceptionMessage" xml:space="preserve">
     <value>Exception while trying to create an instance of the Dynamics CRM web service</value>
   </data>
-  <data name="CurrencyObjectProviderDisplayName" xml:space="preserve">
-    <value>Currency</value>
-  </data>
-  <data name="CurrencyObjectProviderName" xml:space="preserve">
-    <value>CurrencyObjectProvider</value>
-  </data>
   <data name="CurrencyRetrievalExceptionMessage" xml:space="preserve">
     <value>Unable to retrieve base currency fo the {0} organization</value>
   </data>
@@ -278,15 +266,6 @@
   </data>
   <data name="DictionaryForKeyNotInitializedProperly" xml:space="preserve">
     <value>The Dictionary&lt;string, object&gt; supplied contains more than one entry.</value>
-  </data>
-  <data name="DiscountTypeObjectProviderDisplayName" xml:space="preserve">
-    <value>Discount List</value>
-  </data>
-  <data name="DiscountTypeObjectProviderDisplayName1" xml:space="preserve">
-    <value>Discount List</value>
-  </data>
-  <data name="DiscountTypeObjectProviderName" xml:space="preserve">
-    <value>DiscountTypeObjectProvider</value>
   </data>
   <data name="DiscoveryServiceCreationExceptionMessage" xml:space="preserve">
     <value>Exception while trying to create an instance of the Dynamics CRM discovery service</value>
@@ -367,15 +346,6 @@
   <data name="InvalidUserNameExceptionMessage" xml:space="preserve">
     <value>The User Name cannot be empty or blank</value>
   </data>
-  <data name="InvoiceObjectProviderDisplayName" xml:space="preserve">
-    <value>Invoice</value>
-  </data>
-  <data name="InvoiceObjectProviderName" xml:space="preserve">
-    <value>InvoiceObjectProvider</value>
-  </data>
-  <data name="InvoiceObjectProviderName1" xml:space="preserve">
-    <value>InvoiceObjectProvider</value>
-  </data>
   <data name="KeyForLookupIsNullOrEmpty" xml:space="preserve">
     <value>d is null or empty.</value>
   </data>
@@ -433,12 +403,6 @@
   <data name="ObjectProviderSuffix" xml:space="preserve">
     <value>ObjectProvider</value>
   </data>
-  <data name="OrderObjectProviderDisplayName" xml:space="preserve">
-    <value>Order</value>
-  </data>
-  <data name="OrderObjectProviderName" xml:space="preserve">
-    <value>OrderObjectProvider</value>
-  </data>
   <data name="OrganizationNotFoundExceptionMessage" xml:space="preserve">
     <value>The specified organization: {0} was not found.</value>
   </data>
@@ -457,18 +421,6 @@
   <data name="PicklistValueNotFound" xml:space="preserve">
     <value>Name: {0} not found in Picklist: {1} on entity: {2}.</value>
   </data>
-  <data name="PriceLevelObjectProviderDisplayName" xml:space="preserve">
-    <value>Price List</value>
-  </data>
-  <data name="PriceLevelObjectProviderName" xml:space="preserve">
-    <value>PriceLevelObjectProvider</value>
-  </data>
-  <data name="ProductObjectProviderDisplayName" xml:space="preserve">
-    <value>Product</value>
-  </data>
-  <data name="ProductObjectProviderName" xml:space="preserve">
-    <value>ProductObjectProvider</value>
-  </data>
   <data name="PublishExceptionMessage" xml:space="preserve">
     <value>ERROR: Unable to publish CRM metadata Exception: {0}</value>
   </data>
@@ -480,12 +432,6 @@
   </data>
   <data name="QueryNullOrEmptyExceptionMessage" xml:space="preserve">
     <value>query cannot be null or empty.</value>
-  </data>
-  <data name="QuoteObjectProviderDisplayName" xml:space="preserve">
-    <value>Quote</value>
-  </data>
-  <data name="QuoteObjectProviderName" xml:space="preserve">
-    <value>QuoteObjectProvider</value>
   </data>
   <data name="ReadDeletedKeysNotImplementedExceptionMessage" xml:space="preserve">
     <value>ReadDeletedObjectKeys is not implemented for this object provider.</value>
@@ -519,21 +465,6 @@
   </data>
   <data name="UnsupportedMappedObjectExceptionMessage" xml:space="preserve">
     <value>The supplied value ({1}) for MappedObject is not supported at this time.</value>
-  </data>
-  <data name="UoMObjectProviderDisplayName" xml:space="preserve">
-    <value>Unit</value>
-  </data>
-  <data name="UoMObjectProviderName" xml:space="preserve">
-    <value>UoMObjectProvider</value>
-  </data>
-  <data name="UoMObjectProviderName1" xml:space="preserve">
-    <value>UoMObjectProvider</value>
-  </data>
-  <data name="UoMScheduleObjectProviderDisplayName" xml:space="preserve">
-    <value>Unit Group</value>
-  </data>
-  <data name="UoMScheduleObjectProviderName" xml:space="preserve">
-    <value>UoMScheduleObjectProvider</value>
   </data>
   <data name="UomWithProductAndScheduleIdExceptionMessage" xml:space="preserve">
     <value>{0} on defaultunitschedule with id "{1}" for product "{2}"</value>
