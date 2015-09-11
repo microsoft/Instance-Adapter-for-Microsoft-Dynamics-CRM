@@ -57,8 +57,8 @@
 
                 if (entityMetaDataResponse.EntityCollection.Entities.Count > 0)
                 {
-                    List<Entity> FindRecord = entityMetaDataResponse.EntityCollection.Entities.Where(p => p.GetAttributeValue<AliasedValue>(aliaseEntity1IntersectAtt).Value.ToString() == entity1ID && p.GetAttributeValue<AliasedValue>(aliaseEntity2IntersectAtt).Value.ToString() == entity2ID).ToList();
-                    create = FindRecord.Count <= 0;
+                    List<Entity> findRecord = entityMetaDataResponse.EntityCollection.Entities.Where(p => p.GetAttributeValue<AliasedValue>(aliaseEntity1IntersectAtt).Value.ToString() == entity1ID && p.GetAttributeValue<AliasedValue>(aliaseEntity2IntersectAtt).Value.ToString() == entity2ID).ToList();
+                    create = findRecord.Count <= 0;
                 }
 
                 if (create)
@@ -250,6 +250,13 @@
             return this.GetDeletedEntityKeys(modifiedDate);
         }
 
+        /// <summary>
+        /// Override that handles the setting of entity state codes on entities that have complex state transitions.
+        /// </summary>
+        /// <param name="stateToSet">The state code to be set.</param>
+        /// <param name="statusToSet">The status code to be set.</param>
+        /// <param name="entityId">The unique identifier of the entity to set the state and status on.</param>
+        /// <returns>A CRM <c>OrganizationRequest</c> that can be used to set the state and status on an entity in an organization.</returns>
         protected override OrganizationRequest GetSetStateRequest(int stateToSet, int statusToSet, Guid entityId)
         {
             OrganizationRequest returnedRequest = new OrganizationRequest();
@@ -291,6 +298,10 @@
             return base.GetSetStateRequest(stateToSet, statusToSet, entityId);
         }
 
+        /// <summary>
+        /// Initializes the <see cref="DynamicObjectProvider"/>
+        /// </summary>
+        /// <remarks>This method will read the object definition configuration file for a given entity and initialize the dynamic object provider based on that file's contents if it is present on the system.</remarks>
         private void Initialize()
         {
             this.ProvidedEntityName = this.ObjectDefinition.RootDefinition.TypeDefinition.Name;
@@ -301,6 +312,14 @@
             }
         }
 
+        /// <summary>
+        /// Create a CRM <c>AssociationRequest and executes it.</c>
+        /// </summary>
+        /// <param name="relationshipName">The name of the relationship to be created.</param>
+        /// <param name="entity1Name">The name of the first entity to create the relationship from.</param>
+        /// <param name="entity1Guid">The unique identifier for the first entity instance.</param>
+        /// <param name="entity2Name">The name of the related entity.</param>
+        /// <param name="entity2Guid">The unique identifier of the related entity instance.</param>
         private void CreateAssociatedRequest(string relationshipName, string entity1Name, string entity1Guid, string entity2Name, string entity2Guid)
         {
             AssociateRequest areq = new AssociateRequest();
@@ -320,14 +339,21 @@
             this.CrmAdapter.OrganizationService.Execute(areq);
         }
 
-        private RetrieveMultipleResponse AssociatedRetrival(string strEntityRelationshipName, string entity1Name, string entity1IntersectAtt)
+        /// <summary>
+        /// Retrieves entity relationships
+        /// </summary>
+        /// <param name="entityRelationshipName">The name of the relationship.</param>
+        /// <param name="entity1Name">The name of the first entity in the relationship.</param>
+        /// <param name="entity1IntersectAtt">The name of the first entity's intersecting CRM attribute.</param>
+        /// <returns>A CRM <c>RetrieveMultipleResponse</c> that contains the matching relationships.</returns>
+        private RetrieveMultipleResponse AssociatedRetrival(string entityRelationshipName, string entity1Name, string entity1IntersectAtt)
         {
             // Setup Fetch XML.
             StringBuilder linkFetch = new StringBuilder();
             linkFetch.Append("<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"true\">");
             linkFetch.Append("<entity name=\"" + entity1Name + "\">");
             linkFetch.Append("<all-attributes />");
-            linkFetch.Append("<link-entity name=\"" + strEntityRelationshipName + "\" from=\"" + entity1IntersectAtt + "\" to=\"" + entity1IntersectAtt + "\" visible=\"false\" intersect=\"true\" alias=\"aa\">");
+            linkFetch.Append("<link-entity name=\"" + entityRelationshipName + "\" from=\"" + entity1IntersectAtt + "\" to=\"" + entity1IntersectAtt + "\" visible=\"false\" intersect=\"true\" alias=\"aa\">");
             linkFetch.Append("<all-attributes />");
             linkFetch.Append("</link-entity>");
             linkFetch.Append("</entity>");
@@ -343,6 +369,11 @@
             return entityMetaDataResponse;
         }
 
+        /// <summary>
+        /// Retrieves the associations that have been deleted using the audit functionality in CRM.
+        /// </summary>
+        /// <param name="modifiedDate">The <see cref="DateTime"/> to check for disassociations for in the audit history.</param>
+        /// <returns>An <see cref="ICollection"/> of the entities that have been disassociated.</returns>
         private ICollection GetDissassociateRelationship(DateTime modifiedDate)
         {
             RetrieveMultipleRequest retrieveRequest = new RetrieveMultipleRequest();
@@ -440,6 +471,11 @@
             return null;
         }
 
+        /// <summary>
+        /// Gets a list of entity keys for entities that have been disassociated.
+        /// </summary>
+        /// <param name="request">The CRM <c>RetrieveMultipleRequest</c> that contains the request object for the entity keys to be retrieved.</param>
+        /// <returns>A <c>List</c> of CRM <c>Entiy</c> objects.</returns>
         private List<Entity> GetDissassociateRelationshipKeys(RetrieveMultipleRequest request)
         {
             List<Entity> retrievedEntities = new List<Entity>();
@@ -466,6 +502,14 @@
             return retrievedEntities;
         }
 
+        /// <summary>
+        /// Creates a CRM <c>DisassociateRequest</c>
+        /// </summary>
+        /// <param name="relationshipName">The name of the relationship to disassociate.</param>
+        /// <param name="entity1Name">The name of the first entity to disassociate.</param>
+        /// <param name="entity1Guid">The unique identifier of the first entity instance.</param>
+        /// <param name="entity2Name">The name of the second entity to disassociate.</param>
+        /// <param name="entity2Guid">The unique identifier of the second entity to disassociate.</param>
         private void CreateDisassociateRequest(string relationshipName, string entity1Name, string entity1Guid, string entity2Name, string entity2Guid)
         {
             DisassociateRequest dreq = new DisassociateRequest();
@@ -484,13 +528,5 @@
             // Execute the request
             this.CrmAdapter.OrganizationService.Execute(dreq);
         }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RelationshipData"/> class.
-    /// </summary>
-    public class RelationshipData
-    {
-        public Dictionary<string, object> ReturnedDictionary;
-    }
+    }   
 }

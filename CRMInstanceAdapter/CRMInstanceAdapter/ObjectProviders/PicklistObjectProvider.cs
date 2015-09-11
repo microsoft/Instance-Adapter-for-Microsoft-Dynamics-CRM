@@ -197,6 +197,9 @@
             return new List<string>();
         }
 
+        /// <summary>
+        /// Publishes the CRM metadata file
+        /// </summary>
         public void PublishMetadata()
         {
             try
@@ -210,24 +213,45 @@
             }
         }
 
+        /// <summary>
+        /// Begins a bulk operation
+        /// </summary>
+        /// <param name="expectedCount">The expected number of records to be integrated by the bulk operation.</param>
         public void Begin(int expectedCount)
         {            
         }
 
+        /// <summary>
+        /// Cancels a bulk operation
+        /// </summary>
         public void Cancel()
         {            
         }
 
+        /// <summary>
+        /// Finishes a bulk operation
+        /// </summary>
         public void Finish()
         {
             this.PublishMetadata();
         }
 
+        /// <summary>
+        /// Creates a CRM <c>Label</c>
+        /// </summary>
+        /// <param name="label">The test of the <c>Label</c> to be created.</param>
+        /// <param name="langCode">The language code for the <c>Label</c>.</param>
+        /// <returns>A new CRM <c>Label</c>.</returns>
         private static Label CreateSingleLabel(string label, int langCode)
         {
             return new Label(label, langCode);
         }
 
+        /// <summary>
+        /// Processes the global option sets
+        /// </summary>
+        /// <param name="dictionary">The <see cref="String"/> array that contains the global option set values.</param>
+        /// <param name="key">The option set name to be created or updated.</param>
         private void ProcessGlobalPicklists(string[] dictionary, string key)
         {
             if (dictionary.Length > 0)
@@ -255,6 +279,11 @@
             }
         }
 
+        /// <summary>
+        /// Processes the non-global option sets
+        /// </summary>
+        /// <param name="dictionary">The <C>Dictionary</C> that contains the name value pairs for the option set.</param>
+        /// <param name="entityName">The name of the <C>Entity</C> that the option set belongs to.</param>
         private void ProcessPickLists(Dictionary<string, object> dictionary, string entityName)
         {
             if (dictionary == null)
