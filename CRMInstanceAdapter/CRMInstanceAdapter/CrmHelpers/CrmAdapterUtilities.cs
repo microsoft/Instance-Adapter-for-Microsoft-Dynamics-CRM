@@ -1,12 +1,8 @@
 ﻿namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm
 {
     using AdapterAbstractionLayer;
-    using Properties;
     using Common;
-    using Xrm.Sdk;
-    using Xrm.Sdk.Messages;
-    using Xrm.Sdk.Metadata;
-    using Xrm.Sdk.Query;
+    using Properties;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
@@ -14,7 +10,14 @@
     using System.Reflection;
     using System.Text;
     using System.Xml;
+    using Xrm.Sdk;
+    using Xrm.Sdk.Messages;
+    using Xrm.Sdk.Metadata;
+    using Xrm.Sdk.Query;
 
+    /// <summary>
+    /// Utility class to hold various operations that are common when working with Dynamics CRM.
+    /// </summary>
     public static class CRM2011AdapterUtilities
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "Guid fields cannot be made constant.")]
@@ -23,15 +26,15 @@
         public const string DynamicsIntegrationReady = "dynamics_isreadyforintegration";
         public const string IsCriteria = "IsCriteria";
         public const string IsGlobal = "IsGlobal";
-        public const string ReferenceValidationSkip = "ReferenceValidationSkip";
-        internal static Guid DynamicObjectProviderID = new Guid("{C3D8DC9A-E7F9-4132-BC7E-F7991ABDEFE3}");
-        internal const string IsNew = "IsNewObjectProviderInstance";
+        public const string ReferenceValidationSkip = "ReferenceValidationSkip";        
         public const string IsParentField = "IsParentField";
         public const string LookupType = "LookupType";
         public const string LookupField = "LookupField";
         public const string EntityMetadataId = "EntityMetadataId";
+        internal const string IsNew = "IsNewObjectProviderInstance";
+        internal static Guid DynamicObjectProviderID = new Guid("{C3D8DC9A-E7F9-4132-BC7E-F7991ABDEFE3}");        
         private const string InactiveState = "Inactive";
-        
+
         private static string[] integratedEntities = 
         { 
           "product", "contact", "account", 
@@ -119,12 +122,12 @@
         /// <summary>
         /// Gets a <c>QueryExpression</c> instance with it's properties set to the values supplied
         /// </summary>
-        /// <param name="entityName">The name of the <c>BusinessEntity</c> as a <c>string</c> to be querried</param>
-        /// <param name="queryProperty">The property on the <c>BusinessEntity</c> to be querried</param>
-        /// <param name="propertyValue">The value for the property being querried for</param>
+        /// <param name="entityName">The name of the <c>BusinessEntity</c> as a <c>string</c> to be queried</param>
+        /// <param name="queryProperty">The property on the <c>BusinessEntity</c> to be queried</param>
+        /// <param name="propertyValue">The value for the property being queried for</param>
         /// <param name="attributes">The attributes to include on the <c>Entity</c> instance</param>
-        /// <returns>An instance of a <c>QueryExpression</c> that can used as a paramter to a <c>RetrieveMultipleRequest</c></returns>
-        /// <exception cref="ArgumentException">Thrown if the entityName or queryProperty paramters are null or empty</exception>
+        /// <returns>An instance of a <c>QueryExpression</c> that can used as a parameter to a <c>RetrieveMultipleRequest</c></returns>
+        /// <exception cref="ArgumentException">Thrown if the entityName or queryProperty parameters are null or empty</exception>
         /// <remarks>This method sets the Distinct property of the returned <c>QueryExpression</c> to <c>false</c>.  This overload
         /// also assume that the <c>LogicalOperator</c> is set to Equal</remarks>
         public static QueryExpression GetQueryExpression(string entityName, string queryProperty, string propertyValue, params string[] attributes)
@@ -135,13 +138,13 @@
         /// <summary>
         /// Gets a <c>QueryExpression</c> instance with it's properties set to the values supplied
         /// </summary>
-        /// <param name="entityName">The name of the <c>BusinessEntity</c> as a <c>string</c> to be querried</param>
-        /// <param name="queryProperty">The property on the <c>BusinessEntity</c> to be querried</param>
-        /// <param name="propertyValue">The value for the property being querried for</param>
+        /// <param name="entityName">The name of the <c>BusinessEntity</c> as a <c>string</c> to be queried</param>
+        /// <param name="queryProperty">The property on the <c>BusinessEntity</c> to be queried</param>
+        /// <param name="propertyValue">The value for the property being queried for</param>
         /// <param name="conditionOperator">A logical condition operator to use for the condition expression</param>
         /// <param name="attributes">The attributes to include on the <c>Entity</c> instance, if none are supplied then all columns are returned</param>
-        /// <returns>An instance of a <c>QueryExpression</c> that can used as a paramter to a <c>RetrieveMultipleRequest</c></returns>
-        /// <exception cref="ArgumentException">Thrown if the entityName or queryProperty paramters are null or empty</exception>
+        /// <returns>An instance of a <c>QueryExpression</c> that can used as a parameter to a <c>RetrieveMultipleRequest</c></returns>
+        /// <exception cref="ArgumentException">Thrown if the entityName or queryProperty parameters are null or empty</exception>
         /// <remarks>This method sets the Distinct property of the returned <c>QueryExpression</c> to <c>false</c></remarks>
         public static QueryExpression GetQueryExpression(string entityName, string queryProperty, object propertyValue, ConditionOperator conditionOperator, params string[] attributes)
         {
@@ -163,9 +166,10 @@
         /// <summary>
         /// Gets a <c>QueryExpression</c> instance with it's properties set to the values supplied
         /// </summary>
-        /// <param name="entityName">The name of the <c>BusinessEntity</c> as a <c>string</c> to be querried</param>
+        /// <param name="entityName">The name of the <c>BusinessEntity</c> as a <c>string</c> to be queried</param>
         /// <param name="criterion">An <c>ICiterion</c> instance to use for duplicate detection</param>
-        /// <exception cref="AdapterException">Thrown if the <c>ICriterion</c> paramter is null</exception>
+        /// <param name="columnSet">A CRM <c>ColumnSet</c> containing the set of columns to be retruned from the query.</param>
+        /// <exception cref="AdapterException">Thrown if the <c>ICriterion</c> parameter is null</exception>
         /// <returns>A <c>QueryExpression</c> that can used to retrieve entities from the CRM Service</returns>
         /// <remarks>This method sets the Distinct property of the returned <c>QueryExpression</c> to <c>false</c></remarks>
         public static QueryExpression GetQueryExpression(string entityName, ICriterion criterion, ColumnSet columnSet)
@@ -191,12 +195,13 @@
         /// <summary>
         /// Gets a <c>QueryExpression</c> instance with it's properties set to the values supplied
         /// </summary>
-        /// <param name="entityName">The name of the <c>BusinessEntity</c> as a <c>string</c> to be querried</param>
-        /// <param name="modifiedDate">The <c>string</c> value for the date to be querried from</param>
+        /// <param name="entityName">The name of the <c>BusinessEntity</c> as a <c>string</c> to be queried</param>
+        /// <param name="modifiedDate">The <c>string</c> value for the date to be queried from</param>
         /// <param name="adapter">An instance of a <c>CRM2011Adapter</c> used to retrieve the INTEGRATION user's <c>Guid</c></param>
-        /// <param name="isDynamic">True if the object provider calling into this method is a <c>DynamicObbjectProvider</c> and flase otherwise</param>
-        /// <returns>An instance of a <c>QueryExpression</c> that can used as a paramter to a <c>RetrieveMultipleRequest</c></returns>
-        /// <remarks>The method generates a query that is retrivted by the modified date supplied as well as the IntegrationReady flag and the modified by
+        /// <param name="isDynamic">True if the object provider calling into this method is a <c>DynamicObbjectProvider</c> and false otherwise</param>
+        /// <param name="columnSet">A CRM <c>ColumnSet</c> that contains the columns to be returned from the query.</param>
+        /// <returns>An instance of a <c>QueryExpression</c> that can used as a parameter to a <c>RetrieveMultipleRequest</c></returns>
+        /// <remarks>The method generates a query that is retrieved by the modified date supplied as well as the IntegrationReady flag and the modified by
         /// property not being equal to the INTEGRATION user's id</remarks>
         public static QueryExpression GetReaderQueryExpression(string entityName, DateTime modifiedDate, DynamicCrmAdapter adapter, bool isDynamic, ColumnSet columnSet)
         {
@@ -209,14 +214,12 @@
             QueryExpression queryHelper = new QueryExpression(entityName) { Distinct = false, Criteria = new FilterExpression(), ColumnSet = columnSet };
             queryHelper.ColumnSet.AllColumns = true;
 
-
             if (entityName != null)
             {
                 if (entityName == "activitymimeattachment")
                 {
                     LinkEntity emailLink = new LinkEntity()
                     {
-
                         LinkFromEntityName = "activitymimeattachment",
                         LinkFromAttributeName = "activityid",
                         LinkToEntityName = "email",
@@ -251,10 +254,10 @@
         /// Gets a <c>QueryExpression</c> instance for retrieving a <c>uom</c>.
         /// </summary>
         /// <param name="operand">The <c>LogicalOperand</c> to use for this query.</param>
-        /// <param name="entityName">The logical name for the entity to be querried for.</param>        
-        /// <param name="propertyValues">The array of <c>KeyValuePair</c>s that conatins the properties and thier values to be querried for.</param>
-        /// <returns>An instance of a <c>QueryExpression</c> that can used as a paramter to a <c>RetrieveMultipleRequest</c>.</returns>
-        /// <exception cref="ArgumentException">Thrown if the unitName or scheduleId paramters are null or empty.</exception>
+        /// <param name="entityName">The logical name for the entity to be queried for.</param>        
+        /// <param name="propertyValues">The array of <c>KeyValuePair</c>s that contains the properties and their values to be queried for.</param>
+        /// <returns>An instance of a <c>QueryExpression</c> that can used as a parameter to a <c>RetrieveMultipleRequest</c>.</returns>
+        /// <exception cref="ArgumentException">Thrown if the unitName or scheduleId parameters are null or empty.</exception>
         /// <remarks>This method sets the Distinct property of the returned <c>QueryExpression</c> to <c>true</c>.</remarks>
         public static QueryExpression GetMultipartQueryExpression(LogicalOperator operand, string entityName, KeyValuePair<string, string>[] propertyValues)
         {
@@ -276,18 +279,18 @@
         }
 
         /// <summary>
-        /// Gets a <c>Picklist</c> instance who's values are set based on the paramters provided.
+        /// Gets a <c>Picklist</c> instance who's values are set based on the parameters provided.
         /// </summary>
         /// <param name="entity">The current <c>Entity</c>.</param>
         /// <param name="field">The current <c>DefinitionField</c> for the property being mapped to this <c>Picklist</c>.</param>
-        /// <param name="mappedLookupObject">The <c>Dictionary</c> containing the lokup information for the <c>Picklist</c>.</param>
-        /// <param name="CRM2011Adapter">The <c>CRM2011Adapter</c> to use when calling the CRM web service.</param>
+        /// <param name="mappedLookupObject">The <c>Dictionary</c> containing the lookup information for the <c>Picklist</c>.</param>
+        /// <param name="crm2011Adapter">The <c>CRM2011Adapter</c> to use when calling the CRM web service.</param>
         /// <param name="providedEntityName">The name of the <c>Entity</c> that the current object provider is for.</param>
         /// <returns>A <c>Picklist</c> with it's value property set to the one requested in the <c>Dictionary</c>, if one is found and <c>null</c> otherwise.</returns>
         /// <exception cref="ArgumentException">Thrown if the requested value is not currently in the <c>Picklist</c> within the CRM system.</exception>
-        public static OptionSetValue MapPicklist(Entity entity, FieldDefinition field, Dictionary<string, object> mappedLookupObject, DynamicCrmAdapter CRM2011Adapter, string providedEntityName)
+        public static OptionSetValue MapPicklist(Entity entity, FieldDefinition field, Dictionary<string, object> mappedLookupObject, DynamicCrmAdapter crm2011Adapter, string providedEntityName)
         {
-            if (entity == null || field == null || CRM2011Adapter == null)
+            if (entity == null || field == null || crm2011Adapter == null)
             {
                 throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage)) { ExceptionId = AdapterException.SystemExceptionGuid };
             }
@@ -309,7 +312,7 @@
                 }
 
                 // Get the attribute metadata for the state attribute.
-                RetrieveAttributeResponse metadataResponse = (RetrieveAttributeResponse)CRM2011Adapter.OrganizationService.Execute(attribReq);
+                RetrieveAttributeResponse metadataResponse = (RetrieveAttributeResponse)crm2011Adapter.OrganizationService.Execute(attribReq);
                 PicklistAttributeMetadata picklistAttrib = (PicklistAttributeMetadata)metadataResponse.AttributeMetadata;
 
                 var picklistValue = from option in picklistAttrib.OptionSet.Options
@@ -343,6 +346,223 @@
             return returnedMoney;
         }
 
+        /// <summary>
+        /// Sets the properties of an <c>object</c> that has a relationship to another <c>BusinessEntity</c> to the values contained in the supplied <c>Dictionary</c>.
+        /// </summary>
+        /// <param name="mappedLookupObject">The <c>Dictionary</c> that hold the values to be set.</param>
+        /// <param name="relationshipEntity">The <c>CrmReference</c> that needs its values set.</param>
+        public static void SetRelationshipValuesFromDictionary(Dictionary<string, object> mappedLookupObject, object relationshipEntity)
+        {
+            if (mappedLookupObject == null || relationshipEntity == null)
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage)) { ExceptionId = AdapterException.SystemExceptionGuid };
+            }
+
+            // foreach key contained in the dictionary, set it's corresponding property on the CrmReference type to the value from the dictionary
+            foreach (KeyValuePair<string, object> entry in mappedLookupObject)
+            {
+                PropertyInfo p = relationshipEntity.GetType().GetProperty(entry.Key);
+                if (p != null)
+                {
+                    p.SetValue(relationshipEntity, entry.Value, null);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets an instance of the <c>customeraddress</c> class.
+        /// </summary>
+        /// <param name="addressIntegrationKeyValue">The value of the address's dynamics_integrationkey property to query for.</param>
+        /// <param name="parentKey">The parent of this address to use when querying for the existence of this address instance.</param>
+        /// <param name="adapter">An instance of the <c>CRM2011Adapter</c> class to use when calling CRM.</param>
+        /// <param name="addressIntegrationKeyProperty">The key attribute on the <c>customeraddress</c> that the supplied value is for.</param>
+        /// <returns>A new instance with it's dynamics_integrationkey initialized to the value supplied or an existing instance.</returns>
+        public static Entity GetDynamicAddressInstance(string addressIntegrationKeyValue, Guid parentKey, DynamicCrmAdapter adapter, string addressIntegrationKeyProperty)
+        {
+            if (parentKey == null || adapter == null)
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage)) { ExceptionId = AdapterException.SystemExceptionGuid };
+            }
+
+            if (string.IsNullOrEmpty(addressIntegrationKeyProperty))
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.AddressIntegrationKeyPropertyInvalidMessage)) { ExceptionId = ErrorCodes.AddressIntegrationKeyPropertyException };
+            }
+
+            RetrieveMultipleRequest retrieveRequest = new RetrieveMultipleRequest();
+            KeyValuePair<string, string>[] propertyValues = new KeyValuePair<string, string>[2];
+            propertyValues[0] = new KeyValuePair<string, string>(addressIntegrationKeyProperty, addressIntegrationKeyValue);
+            propertyValues[1] = new KeyValuePair<string, string>("parentid", parentKey.ToString());
+            retrieveRequest.Query = CRM2011AdapterUtilities.GetMultipartQueryExpression(LogicalOperator.And, "customeraddress", propertyValues);
+            RetrieveMultipleResponse retrieveResponse = (RetrieveMultipleResponse)adapter.OrganizationService.Execute(retrieveRequest);
+            Entity returnedEntity = null;
+
+            if (retrieveResponse.EntityCollection.Entities.Count == 1)
+            {
+                returnedEntity = retrieveResponse.EntityCollection.Entities[0] as Entity;
+                returnedEntity[CRM2011AdapterUtilities.IsNew] = false;
+                return returnedEntity;
+            }
+            else if (retrieveResponse.EntityCollection.Entities.Count < 1)
+            {
+                // this is a new entity instance and we need to map the provided data onto the DynamicsEntity       
+                returnedEntity = new Entity() { LogicalName = "customeraddress" };
+                if (addressIntegrationKeyProperty.Equals("customeraddressid", StringComparison.OrdinalIgnoreCase))
+                {
+                    returnedEntity[addressIntegrationKeyProperty] = new Guid(addressIntegrationKeyValue);
+                }
+                else
+                {
+                    returnedEntity[addressIntegrationKeyProperty] = addressIntegrationKeyValue;
+                }
+
+                returnedEntity[CRM2011AdapterUtilities.IsNew] = true;
+                return returnedEntity;
+            }
+            else
+            {
+                throw new AdapterException(
+                    string.Format(
+                    CultureInfo.CurrentCulture,
+                    Resources.MultipleDynamicEntitiesReturnedExceptionMessage,
+                    "customeraddress",
+                    addressIntegrationKeyProperty,
+                    addressIntegrationKeyValue))
+                {
+                    ExceptionId = ErrorCodes.MultipleCustomerAddressResult
+                };
+            }
+        }
+
+        /// <summary>
+        /// Converts all representations of the state property to an integer.
+        /// </summary>
+        /// <param name="stateName">The state to get the integer value of as a <c>string</c>.</param>
+        /// <param name="entityName">The name of the entity type to get the state code for.</param>
+        /// <param name="adapter">The <see cref="DynamicCrmAdapter"/> to use for calling into a CRM for resolving that state.</param>
+        /// <returns>An <c>int</c> the represents the state.</returns>
+        public static int ConvertStateNameToValue(string stateName, string entityName, DynamicCrmAdapter adapter)
+        {
+            if (adapter == null)
+            {
+                throw new ArgumentNullException("adapter");
+            }
+
+            RetrieveAttributeRequest attribReq = new RetrieveAttributeRequest() { EntityLogicalName = entityName, LogicalName = "statecode", RetrieveAsIfPublished = true };
+
+            // Get the attribute metadata for the state attribute.
+            RetrieveAttributeResponse metadataResponse = (RetrieveAttributeResponse)adapter.OrganizationService.Execute(attribReq);
+            StateAttributeMetadata picklistAttrib = (StateAttributeMetadata)metadataResponse.AttributeMetadata;
+
+            var picklistValue = from option in picklistAttrib.OptionSet.Options
+                                where option.Label.UserLocalizedLabel.Label.ToUpperInvariant() == stateName.ToUpperInvariant()
+                                select option.Value;
+
+            // Ensure that both the returned list and the first item in the returned list are not null or empty.
+            if ((picklistValue.Count() > 0) && (picklistValue.First() != null))
+            {
+                return picklistValue.First().Value;
+            }
+
+            return CRM2011AdapterUtilities.GetDefaultStateCodeValue(stateName);
+        }
+
+        /// <summary>
+        /// Returns the name of an object provider base on the type name specified in it's configuration file.
+        /// </summary>
+        /// <param name="objDef">The <c>ObjectDefinition</c> to get the type name from</param>
+        /// <returns>A <c>string</c> that is the proper <c>ObjectProvider</c> name</returns>
+        public static string GetObjectProviderName(ObjectDefinition objDef)
+        {
+            if (objDef == null)
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("objDef")) { ExceptionId = AdapterException.SystemExceptionGuid };
+            }
+
+            StringBuilder builder = new StringBuilder(objDef.RootDefinition.DisplayName.ConvertToValidFileName().Replace(" ", string.Empty));
+            builder.Append(string.Format(CultureInfo.InvariantCulture, Resources.ObjectProviderSuffix));
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Returns the Inner text from the 'code' node inside the supplied error node.
+        /// </summary>
+        /// <param name="errorInfo">The <c>XmlNode</c> that contains the error code</param>
+        /// <returns>A <c>string</c> that contains the error code</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1059:MembersShouldNotExposeCertainConcreteTypes", MessageId = "System.Xml.XmlNode", Justification = "This is the type that is returned from the CRM web service when an error occurs.")]
+        public static string GetErrorCode(XmlNode errorInfo)
+        {
+            if (errorInfo == null)
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("errorInfo")) { ExceptionId = AdapterException.SystemExceptionGuid };
+            }
+
+            XmlNode code = errorInfo.SelectSingleNode("//code");
+            if (code != null)
+            {
+                return code.InnerText;
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Converts a CRM <c>AttributeType</c> into a simple .NET type.
+        /// </summary>
+        /// <param name="typeToConvert">The CRM <c>AttributeType</c> to be converted.</param>
+        /// <returns>A .NET <see cref="Type"/> that coeesponds to the CRM type.</returns>
+        public static Type SimpleTypeConvert(AttributeTypeCode typeToConvert)
+        {
+            switch (typeToConvert)
+            {
+                case AttributeTypeCode.Boolean:
+                    return typeof(bool?);
+                case AttributeTypeCode.DateTime:
+                    return typeof(DateTime?);
+                case AttributeTypeCode.Decimal:
+                    return typeof(decimal?);
+                case AttributeTypeCode.Double:
+                    return typeof(double?);
+                case AttributeTypeCode.Integer:
+                    return typeof(int?);
+                case AttributeTypeCode.Memo:
+                case AttributeTypeCode.String:
+                    return typeof(string);
+                case AttributeTypeCode.Uniqueidentifier:
+                    return typeof(Guid);
+                default:
+                    return typeof(object);
+            }
+        }
+
+        /// <summary>
+        /// Converts a CRM complex type into a <see cref="ComplexType"/>.
+        /// </summary>
+        /// <param name="typeToConvert">The CRM <c>AttributeTypeCode</c> to be converted.</param>
+        /// <param name="objDef">The <see cref="ObjectDefinition"/> that holds the type data.</param>
+        /// <returns>A <see cref="ComplexType"/> that contains the converted CRM type information.</returns>
+        public static ComplexType ComplexTypeConvert(AttributeTypeCode typeToConvert, ObjectDefinition objDef)
+        {
+            switch (typeToConvert)
+            {
+                case AttributeTypeCode.Customer:
+                case AttributeTypeCode.Lookup:
+                case AttributeTypeCode.Owner:
+                    return GetComplexTypeForReference(objDef, "EntityReference");
+                case AttributeTypeCode.Money:
+                    return GetComplexTypeForMoney(objDef);
+                case AttributeTypeCode.Picklist:
+                case AttributeTypeCode.State:
+                    return GetComplexTypeForPicklist(objDef);
+                case AttributeTypeCode.PartyList:
+                    return GetComplexTypeForPartyList(objDef, typeToConvert.ToString());                
+                case AttributeTypeCode.Status:
+                    return GetComplexTypeForPicklist(objDef); // Added support for the Status Code field for any entity with a status code setting
+                default:
+                    return null;
+            }
+        }
+
         internal static bool IsAddressOneOrTwo(Entity childEntity)
         {
             if (childEntity.Contains("addressnumber"))
@@ -357,6 +577,31 @@
         internal static bool IsSpecialAddressPicklist(Entity entity, FieldDefinition field)
         {
             return entity.LogicalName == "customeraddress" && GetSpecialAddressPicklistFields().Contains(field.Name) && entity.Contains("addressnumber") && IsAddressOneOrTwo(entity);
+        }
+
+        internal static OrganizationRequest GetContractCancelRequest(int statusToSet, Guid entityId)
+        {
+            OrganizationRequest request = new OrganizationRequest("CancelContract") { Parameters = new ParameterCollection() };
+            request.Parameters.Add(new KeyValuePair<string, object>("Status", statusToSet));
+            request.Parameters.Add(new KeyValuePair<string, object>("CancelDate", DateTime.Now.ToUniversalTime()));
+            request.Parameters.Add(new KeyValuePair<string, object>("ContractId", entityId));
+            return request;
+        }
+
+        internal static OrganizationRequest GetIncidentCloseRequest(int statusToSet, Guid entityId)
+        {
+            OrganizationRequest request = new OrganizationRequest("CloseIncident") { Parameters = new ParameterCollection() };
+            request.Parameters.Add(new KeyValuePair<string, object>("Status", statusToSet));
+            request.Parameters.Add(new KeyValuePair<string, object>("IncidentResolution", new EntityReference("incident", entityId)));
+            return request;
+        }
+
+        internal static OrganizationRequest GetOpportunityLoseRequest(int statusToSet, Guid entityId)
+        {
+            OrganizationRequest request = new OrganizationRequest("LoseOpportunity") { Parameters = new ParameterCollection() };
+            request.Parameters.Add(new KeyValuePair<string, object>("Status", statusToSet));
+            request.Parameters.Add(new KeyValuePair<string, object>("OpportunityClose", new EntityReference("opportunity", entityId)));
+            return request;
         }
 
         private static ComplexType GetComplexTypeForReference(ObjectDefinition objDef, string complexTypeName)
@@ -411,236 +656,6 @@
             }
 
             return new FieldDefinition() { Name = name, TypeDefinition = simpleType, DisplayName = displayName, IsRequired = isRequired, TypeName = simpleType.Name, IsReadOnly = isReadOnly };
-
-        }
-
-        /// <summary>
-        /// Sets the properties of an <c>object</c> that has a relationship to another <c>BusinessEntity</c> to the values conatined in the supplied <c>Dictionary</c>.
-        /// </summary>
-        /// <param name="mappedLookupObject">The <c>Dictionary</c> that hold the vaules to be set.</param>
-        /// <param name="relationshipEntity">The <c>CrmReference</c> that needs its values set.</param>
-        public static void SetRelationshipValuesFromDictionary(Dictionary<string, object> mappedLookupObject, object relationshipEntity)
-        {
-            if (mappedLookupObject == null || relationshipEntity == null)
-            {
-                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage)) { ExceptionId = AdapterException.SystemExceptionGuid };
-            }
-
-            // foreach key contained in the dictionary, set it's corresponding property on the CrmReference type to the value from the dictionary
-            foreach (KeyValuePair<string, object> entry in mappedLookupObject)
-            {
-                PropertyInfo p = relationshipEntity.GetType().GetProperty(entry.Key);
-                if (p != null)
-                {
-                    p.SetValue(relationshipEntity, entry.Value, null);
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Gets an instance of the <c>customeraddress</c> class.
-        /// </summary>
-        /// <param name="addressIntegrationKeyValue">The value of the address's dynamics_integrationkey property to querry for.</param>
-        /// <param name="parentKey">The parent of this address to use when querring for the existance of this address instance.</param>
-        /// <param name="adapter">An instance of the <c>CRM2011Adapter</c> class to use when calling CRM.</param>
-        /// <param name="addressIntegrationKeyProperty">The key attribute on the <c>customeraddress</c> that the supplied value is for.</param>
-        /// <param name="returnNull">True to return null if no matching entity is found, and false to return a new instance</param>
-        /// <returns>A new instance with it's dynamics_integrationkey initialized to the value supplied or an existing instance.</returns>
-        public static Entity GetDynamicAddressInstance(string addressIntegrationKeyValue, Guid parentKey, DynamicCrmAdapter adapter, string addressIntegrationKeyProperty)
-        {
-            if (parentKey == null || adapter == null)
-            {
-                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage)) { ExceptionId = AdapterException.SystemExceptionGuid };
-            }
-
-            if (string.IsNullOrEmpty(addressIntegrationKeyProperty))
-            {
-                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.AddressIntegrationKeyPropertyInvalidMessage)) { ExceptionId = ErrorCodes.AddressIntegrationKeyPropertyException };
-            }
-
-            RetrieveMultipleRequest retrieveRequest = new RetrieveMultipleRequest();
-            KeyValuePair<string, string>[] propertyValues = new KeyValuePair<string, string>[2];
-            propertyValues[0] = new KeyValuePair<string, string>(addressIntegrationKeyProperty, addressIntegrationKeyValue);
-            propertyValues[1] = new KeyValuePair<string, string>("parentid", parentKey.ToString());
-            retrieveRequest.Query = CRM2011AdapterUtilities.GetMultipartQueryExpression(LogicalOperator.And, "customeraddress", propertyValues);
-            RetrieveMultipleResponse retrieveResponse = (RetrieveMultipleResponse)adapter.OrganizationService.Execute(retrieveRequest);
-            Entity returnedEntity = null;
-
-            if (retrieveResponse.EntityCollection.Entities.Count == 1)
-            {
-                returnedEntity = retrieveResponse.EntityCollection.Entities[0] as Entity;
-                returnedEntity[CRM2011AdapterUtilities.IsNew] = false;
-                return returnedEntity;
-            }
-            else if (retrieveResponse.EntityCollection.Entities.Count < 1)
-            {
-                // this is a new entity instance and we need to map the provided data onto the DynamicsEntity       
-                returnedEntity = new Entity() { LogicalName = "customeraddress" };
-                if (addressIntegrationKeyProperty.Equals("customeraddressid", StringComparison.OrdinalIgnoreCase))
-                {
-                    returnedEntity[addressIntegrationKeyProperty] = new Guid(addressIntegrationKeyValue);
-                }
-                else
-                {
-                    returnedEntity[addressIntegrationKeyProperty] = addressIntegrationKeyValue;
-                }
-                returnedEntity[CRM2011AdapterUtilities.IsNew] = true;
-                return returnedEntity;
-            }
-            else
-            {
-                throw new AdapterException(
-                    string.Format(
-                    CultureInfo.CurrentCulture,
-                    Resources.MultipleDynamicEntitiesReturnedExceptionMessage,
-                    "customeraddress",
-                    addressIntegrationKeyProperty,
-                    addressIntegrationKeyValue))
-                {
-                    ExceptionId = ErrorCodes.MultipleCustomerAddressResult
-                };
-            }
-        }
-
-        /// <summary>
-        /// Converts all representations of the state property to an int.
-        /// </summary>
-        /// <param name="stateName">The state to get the integer value of as a <c>string</c>.</param>
-        /// <param name="entityName">The name of the entity type to get the statecode for.</param>
-        /// <returns>An <c>int</c> the represents the state.</returns>
-        public static int ConvertStateNameToValue(string stateName, string entityName, DynamicCrmAdapter adapter)
-        {
-            if (adapter == null) throw new ArgumentNullException("adapter");
-
-            RetrieveAttributeRequest attribReq = new RetrieveAttributeRequest() { EntityLogicalName = entityName, LogicalName = "statecode", RetrieveAsIfPublished = true };
-
-            // Get the attribute metadata for the state attribute.
-            RetrieveAttributeResponse metadataResponse = (RetrieveAttributeResponse)adapter.OrganizationService.Execute(attribReq);
-            StateAttributeMetadata picklistAttrib = (StateAttributeMetadata)metadataResponse.AttributeMetadata;
-
-            var picklistValue = from option in picklistAttrib.OptionSet.Options
-                                where option.Label.UserLocalizedLabel.Label.ToUpperInvariant() == stateName.ToUpperInvariant()
-                                select option.Value;
-
-            // ensure that both the returned list and the first item in the returned list are not null or empty.
-            if ((picklistValue.Count() > 0) && (picklistValue.First() != null))
-            {
-                return picklistValue.First().Value;
-            }
-
-            return CRM2011AdapterUtilities.GetDefaultStateCodeValue(stateName);
-        }
-
-        /// <summary>
-        /// Returns the name of an object provider base on the type name specified in it's configuration file.
-        /// </summary>
-        /// <param name="objDef">The <c>ObjectDefinition</c> to get the type name from</param>
-        /// <returns>A <c>string</c> that is the proper <c>ObjectProvider</c> name</returns>
-        public static string GetObjectProviderName(ObjectDefinition objDef)
-        {
-            if (objDef == null)
-            {
-                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("objDef")) { ExceptionId = AdapterException.SystemExceptionGuid };
-            }
-
-            StringBuilder builder = new StringBuilder(objDef.RootDefinition.DisplayName.ConvertToValidFileName().Replace(" ", string.Empty));
-            builder.Append(string.Format(CultureInfo.InvariantCulture, Resources.ObjectProviderSuffix));
-            return builder.ToString();
-        }
-
-        /// <summary>
-        /// Returns the Inner text from the 'code' node inside the supplied error node.
-        /// </summary>
-        /// <param name="errorInfo">The <c>XmlNode</c> that contains the error code</param>
-        /// <returns>A <c>string</c> that contains the error code</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1059:MembersShouldNotExposeCertainConcreteTypes", MessageId = "System.Xml.XmlNode")]
-        public static string GetErrorCode(XmlNode errorInfo)
-        {
-            if (errorInfo == null)
-            {
-                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("errorInfo")) { ExceptionId = AdapterException.SystemExceptionGuid };
-            }
-
-            XmlNode code = errorInfo.SelectSingleNode("//code");
-            if (code != null)
-            {
-                return code.InnerText;
-            }
-
-            return string.Empty;
-        }
-
-        public static Type SimpleTypeConvert(AttributeTypeCode typeToConvert)
-        {
-
-            switch (typeToConvert)
-            {
-                case AttributeTypeCode.Boolean:
-                    return typeof(bool?);
-                case AttributeTypeCode.DateTime:
-                    return typeof(DateTime?);
-                case AttributeTypeCode.Decimal:
-                    return typeof(decimal?);
-                case AttributeTypeCode.Double:
-                    return typeof(double?);
-                case AttributeTypeCode.Integer:
-                    return typeof(int?);
-                case AttributeTypeCode.Memo:
-                case AttributeTypeCode.String:
-                    return typeof(string);
-                case AttributeTypeCode.Uniqueidentifier:
-                    return typeof(Guid);
-                default:
-                    return typeof(object);
-            }
-        }
-
-        public static ComplexType ComplexTypeConvert(AttributeTypeCode typeToConvert, ObjectDefinition objDef)
-        {
-            switch (typeToConvert)
-            {
-                case AttributeTypeCode.Customer:
-                case AttributeTypeCode.Lookup:
-                case AttributeTypeCode.Owner:
-                    return GetComplexTypeForReference(objDef, "EntityReference");
-                case AttributeTypeCode.Money:
-                    return GetComplexTypeForMoney(objDef);
-                case AttributeTypeCode.Picklist:
-                case AttributeTypeCode.State:
-                    return GetComplexTypeForPicklist(objDef);
-                case AttributeTypeCode.PartyList:
-                    return GetComplexTypeForPartyList(objDef, typeToConvert.ToString());
-                    // Added support for the Status Code field for any entity with a status code setting
-                case AttributeTypeCode.Status:
-                    return GetComplexTypeForPicklist(objDef);
-                default:
-                    return null;
-            }
-        }
-
-        internal static OrganizationRequest GetOpportunityLoseRequest(int statusToSet, Guid entityId)
-        {
-            OrganizationRequest request = new OrganizationRequest("LoseOpportunity") { Parameters = new ParameterCollection() };
-            request.Parameters.Add(new KeyValuePair<string, object>("Status", statusToSet));
-            request.Parameters.Add(new KeyValuePair<string, object>("OpportunityClose", new EntityReference("opportunity", entityId)));
-            return request;
-        }
-
-        internal static OrganizationRequest GetContractCancelRequest(int statusToSet, Guid entityId)
-        {
-            OrganizationRequest request = new OrganizationRequest("CancelContract") { Parameters = new ParameterCollection() };
-            request.Parameters.Add(new KeyValuePair<string, object>("Status", statusToSet));
-            request.Parameters.Add(new KeyValuePair<string, object>("CancelDate", DateTime.Now.ToUniversalTime()));
-            request.Parameters.Add(new KeyValuePair<string, object>("ContractId", entityId));
-            return request;
-        }
-
-        internal static OrganizationRequest GetIncidentCloseRequest(int statusToSet, Guid entityId)
-        {
-            OrganizationRequest request = new OrganizationRequest("CloseIncident") { Parameters = new ParameterCollection() };
-            request.Parameters.Add(new KeyValuePair<string, object>("Status", statusToSet));
-            request.Parameters.Add(new KeyValuePair<string, object>("IncidentResolution", new EntityReference("incident", entityId)));
-            return request;
         }
 
         private static int GetDefaultStateCodeValue(string stateName)
