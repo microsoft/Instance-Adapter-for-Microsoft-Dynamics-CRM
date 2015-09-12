@@ -56,9 +56,20 @@
         }
 
         /// <summary>
+        /// Gets the primary attribute's value for this entity.
+        /// </summary>
+        internal string KeyAttribute
+        {
+            get
+            {
+                return this.IsActivityEntity != true ? this.ProvidedEntityName + "id" : "activityid";
+            }
+        }
+
+        /// <summary>
         /// Gets this object provider's <c>Adapter</c> as a <c>CRMAdapter</c>.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations", Justification = "If the adapter is the incorrect type, we need to get out of this code right away.")]
         protected DynamicCrmAdapter CrmAdapter
         {
             get
@@ -100,54 +111,9 @@
         }
 
         /// <summary>
-        /// Assigns an object to be the value for a property on a <c>Entity</c>.
-        /// </summary>
-        /// <param name="reference">The <c>object</c> be assigned as the value</param>
-        /// <param name="entity">The <c>Entity</c> to be assigned to</param>
-        /// <param name="propertyToBeAssignedValue">The name of the property on the <c>Entity</c> to assign the supplied object to</param>
-        /// <remarks>If the <c>object</c> is null, nothing is assigned to the property</remarks>
-        protected static void AssignReferencePropertyValue(EntityReference reference, Entity entity, string propertyToBeAssignedValue)
-        {
-            if (entity == null)
-            {
-                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("entity")) { ExceptionId = AdapterException.SystemExceptionGuid };
-            }
-
-            // These checks are only for updates
-            if (entity.Contains(CRM2011AdapterUtilities.IsNew) && !(bool)entity[CRM2011AdapterUtilities.IsNew])
-            {
-                if (entity.Contains(propertyToBeAssignedValue))
-                {
-                    if (reference == null)
-                    {
-                        // Since the reference entity supplied is null, remove the property from the retrieved entity to avoid a potential update storm
-                        entity.Attributes.Remove(propertyToBeAssignedValue);
-                    }
-                    else if (((EntityReference)entity[propertyToBeAssignedValue]).Id == reference.Id)
-                    {
-                        // Since this property has the same value we are trying to assign it, remove it to avoid a potential update storm
-                        entity.Attributes.Remove(propertyToBeAssignedValue);
-                    }
-                    else
-                    {
-                        entity[propertyToBeAssignedValue] = reference;
-                    }
-
-                    return;
-                }
-            }
-
-            // This is a new instance or the existing instance did not contain this property when it was retrieved
-            if (reference != null)
-            {
-                entity[propertyToBeAssignedValue] = reference;
-            }
-        }
-
-        /// <summary>
         /// Gets a <c>List</c> of the <c>CollectionType</c>s in this provider's configuration file.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "A list is needed here since this collection is loaded as run time.")]
         protected List<FieldDefinition> CollectionFields
         {
             get
@@ -168,49 +134,63 @@
         }
 
         /// <summary>
-        /// Gets the primary attribute's value for this entity.
+        /// Gets a <c>Dictionary</c> that represents a <c>DynamicEntity</c>.
         /// </summary>
-        internal string KeyAttribute
+        /// <param name="entity">The CRM <c>Entity</c> to return as a <c>Dictioanry</c>.</param>
+        /// <param name="adapter">An instance of a <c>CRMAdapter</c> to use when getting dynamics_integrationkey data for a <c>Lookup</c> type.</param>
+        /// <param name="fieldDefinitions">The <C>List</C> of <see cref="FieldDefinition"/>s to use when populating the <C>Dictionary</C>.</param>
+        /// <returns>A <c>Dictionary</c> that has Keys that are the property names of the <c>DynamicEntity</c> supplied and 
+        /// Values that are the values of those properties on the <c>DynamicEntity</c>.</returns>
+        internal static Dictionary<string, object> GetDictionary(Entity entity, DynamicCrmAdapter adapter, List<FieldDefinition> fieldDefinitions)
         {
-            get
-            {
-                return this.IsActivityEntity != true ? this.ProvidedEntityName + "id" : "activityid";
-            }
-        }        
+            Dictionary<string, object> dictionary = new Dictionary<string, object>();
 
-        /// <summary>
-        /// Gets this <c>ObjectProvider</c>'s configuration file as an <c>ObjectDefinitionConfiguration</c> <c>object</c>.
-        /// </summary>
-        /// <returns>An <c>ObjectDefinitionConfiguration</c> <c>object</c>.</returns>
-        /// <exception cref="ConfigurationErrorsException">Thrown if the configuration file does not exist in the location searched.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        protected override ObjectDefinition GetObjectDefinitionInternal()
-        {
-            if (this.Adapter != null && !string.IsNullOrEmpty(this.CrmAdapter.OrganizationName))
+            // This dictionary is for holding a complexType that might be the type for the current property on the entity
+            Dictionary<string, object> holdingDictionary;
+            foreach (KeyValuePair<string, object> property in entity.Attributes)
             {
-                var filePath = Path.Combine(this.CrmAdapter.GetConfigPath<DynamicCrmAdapter>(), this.Name + ".config");
-                ObjectDefinition def = new ObjectDefinition();
-                try
+                // CrmMoney needs the dictionary to be converted but it also starts with the same prefix as the property types that do not,so handle it separately
+                // else if the property is not one of the Built-in types and is also not of the StringProperty type, use the holding dictionary
+                Type propertyType = property.Value.GetType();
+                holdingDictionary = new Dictionary<string, object>();
+                if (propertyType == typeof(Money))
                 {
-                    using (var fs = File.OpenRead(filePath))
-                    {
-                        using (var xr = XmlReader.Create(fs))
-                        {
-                            var serializer = new XmlSerializer(typeof(ObjectDefinition));
-                            def = (ObjectDefinition)serializer.Deserialize(xr);
-                        }
-                    }
+                    PopulateDictionary(entity, holdingDictionary, property);
                 }
-                catch (FileNotFoundException)
+                else if (propertyType == typeof(OptionSetValue))
                 {
-                    // "CrmServerConfiguration file for the " + this.Name + " is not present in the " + filePath + " directory."
-                    throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidObjectProviderConfigPath, new object[] { this.Name, filePath }));
+                    PopulateOptionSetValueDictionary(entity, holdingDictionary, property, adapter);
+                }
+                else if (propertyType == typeof(EntityReference))
+                {
+                    FieldDefinition definition = fieldDefinitions.FirstOrDefault(x => x.Name == property.Key);
+                    PopulateDictionary(entity, holdingDictionary, property, adapter, definition);
+                }
+                else if (propertyType == typeof(EntityCollection))
+                {
+                    FieldDefinition definition = fieldDefinitions.FirstOrDefault(x => x.Name == property.Key);
+                    PopulatePartyList(entity, holdingDictionary, property, adapter, definition);
                 }
 
-                return def;
+                // The property is of a ComplexType and the holding dictionary was populated
+                // else if the property is one of the Built-in CRM types just convert it
+                // else if the property was a string property, just use its value
+                if (holdingDictionary.Count > 0)
+                {
+                    dictionary.Add(property.Key, holdingDictionary);
+                }
+                else
+                {
+                    dictionary.Add(property.Key, property.Value);
+                }
             }
 
-            return base.GetObjectDefinitionInternal();
+            if (fieldDefinitions.Any(x => x.Name == "overriddencreatedon"))
+            {
+                dictionary.Add("overriddencreatedon", null);
+            }
+
+            return dictionary;
         }
 
         /// <summary>
@@ -252,7 +232,7 @@
                 return returnedEntity;
             }
             else if (retrieveResponse.EntityCollection.Entities.Count < 1)
-            {                                
+            {
                 // this is a new entity instance and we need to map the provided data onto the DynamicsEntity
                 returnedEntity = this.GetNewEntityInstance(queryProperty, queryValue, entityName);
                 returnedEntity[CRM2011AdapterUtilities.IsNew] = true;
@@ -299,6 +279,128 @@
             }
 
             return returnedEntity;
+        }
+
+        /// <summary>
+        /// Calls the CRM service and retrieves the entities that match the modifiedDateValue expression that is built up based on the supplied values
+        /// </summary>
+        /// <param name="queryValue">The value of the property to be queried for</param>
+        /// <param name="keyProperty">The attribute to use to use when querying</param>
+        /// <param name="entityName">The name of the entity to be queried for</param>
+        /// <param name="attributes">The attributes to include on the <c>Entity</c> instance</param>
+        /// <returns>A <c>RetrieveMaultipleResponse</c> that contains the <c>DynamicEntities</c> that matched the supplied values</returns>
+        internal RetrieveMultipleResponse RetrieveMultipleDynamicEntities(string queryValue, string keyProperty, string entityName, params string[] attributes)
+        {
+            RetrieveMultipleRequest retrieveRequest = new RetrieveMultipleRequest();
+            retrieveRequest.Query = CRM2011AdapterUtilities.GetQueryExpression(entityName, keyProperty, queryValue, attributes);
+            return (RetrieveMultipleResponse)this.CallCrmExecuteWebMethod(retrieveRequest);
+        }
+
+        /// <summary>
+        /// Gets an instance of the <c>Entity</c> class that can be used for delete operations
+        /// </summary>
+        /// <param name="queryValue">The value of the integration key for a deleted entity.</param>
+        /// /// <param name="keyProperty">The name of the entity's key property.</param>
+        /// <param name="entityName">The name of the entity.</param>
+        /// <param name="attributes">The attributes to include on the <c>Entity</c> instance</param>
+        /// <returns>An <c>Entity</c> that contains a deleted instance of a <c>BusinessEntity</c>.</returns>
+        internal Entity GetDynamicInstanceToDelete(string queryValue, string keyProperty, string entityName, params string[] attributes)
+        {
+            RetrieveMultipleResponse retrieveResponse = this.RetrieveMultipleDynamicEntities(queryValue, keyProperty, entityName, attributes);
+
+            if (retrieveResponse.EntityCollection.Entities.Count == 1)
+            {
+                return retrieveResponse.EntityCollection.Entities[0] as Entity;
+            }
+            else if (retrieveResponse.EntityCollection.Entities.Count < 1)
+            {
+                return this.QueryByEntityKey(queryValue, entityName);
+            }
+            else
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.MultipleDynamicEntitiesReturnedExceptionMessage, entityName, keyProperty, queryValue)) { ExceptionId = ErrorCodes.DeleteResponseMultipleResult };
+            }
+        }
+
+        /// <summary>
+        /// Assigns an object to be the value for a property on a <c>Entity</c>.
+        /// </summary>
+        /// <param name="reference">The <c>object</c> be assigned as the value</param>
+        /// <param name="entity">The <c>Entity</c> to be assigned to</param>
+        /// <param name="propertyToBeAssignedValue">The name of the property on the <c>Entity</c> to assign the supplied object to</param>
+        /// <remarks>If the <c>object</c> is null, nothing is assigned to the property</remarks>
+        protected static void AssignReferencePropertyValue(EntityReference reference, Entity entity, string propertyToBeAssignedValue)
+        {
+            if (entity == null)
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("entity")) { ExceptionId = AdapterException.SystemExceptionGuid };
+            }
+
+            // These checks are only for updates
+            if (entity.Contains(CRM2011AdapterUtilities.IsNew) && !(bool)entity[CRM2011AdapterUtilities.IsNew])
+            {
+                if (entity.Contains(propertyToBeAssignedValue))
+                {
+                    if (reference == null)
+                    {
+                        // Since the reference entity supplied is null, remove the property from the retrieved entity to avoid a potential update storm
+                        entity.Attributes.Remove(propertyToBeAssignedValue);
+                    }
+                    else if (((EntityReference)entity[propertyToBeAssignedValue]).Id == reference.Id)
+                    {
+                        // Since this property has the same value we are trying to assign it, remove it to avoid a potential update storm
+                        entity.Attributes.Remove(propertyToBeAssignedValue);
+                    }
+                    else
+                    {
+                        entity[propertyToBeAssignedValue] = reference;
+                    }
+
+                    return;
+                }
+            }
+
+            // This is a new instance or the existing instance did not contain this property when it was retrieved
+            if (reference != null)
+            {
+                entity[propertyToBeAssignedValue] = reference;
+            }
+        }  
+
+        /// <summary>
+        /// Gets this <c>ObjectProvider</c>'s configuration file as an <c>ObjectDefinitionConfiguration</c> <c>object</c>.
+        /// </summary>
+        /// <returns>An <c>ObjectDefinitionConfiguration</c> <c>object</c>.</returns>
+        /// <exception cref="ConfigurationErrorsException">Thrown if the configuration file does not exist in the location searched.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "Standard pattern for reading from an XML file."), 
+            System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "The logic here it too complex for a property.")]
+        protected override ObjectDefinition GetObjectDefinitionInternal()
+        {
+            if (this.Adapter != null && !string.IsNullOrEmpty(this.CrmAdapter.OrganizationName))
+            {
+                var filePath = Path.Combine(this.CrmAdapter.GetConfigPath<DynamicCrmAdapter>(), this.Name + ".config");
+                ObjectDefinition def = new ObjectDefinition();
+                try
+                {
+                    using (var fs = File.OpenRead(filePath))
+                    {
+                        using (var xr = XmlReader.Create(fs))
+                        {
+                            var serializer = new XmlSerializer(typeof(ObjectDefinition));
+                            def = (ObjectDefinition)serializer.Deserialize(xr);
+                        }
+                    }
+                }
+                catch (FileNotFoundException)
+                {
+                    // "CrmServerConfiguration file for the " + this.Name + " is not present in the " + filePath + " directory."
+                    throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidObjectProviderConfigPath, new object[] { this.Name, filePath }));
+                }
+
+                return def;
+            }
+
+            return base.GetObjectDefinitionInternal();
         }        
 
         /// <summary>
@@ -439,7 +541,7 @@
                             if (fieldDef.TypeDefinition.Name == "EntityReference")
                             {
                                 var mappedValue = attribute.Value as Dictionary<string, object>;
-                                var entityReference = MapEntityReference(fieldDef, mappedValue);
+                                var entityReference = this.MapEntityReference(fieldDef, mappedValue);
 
                                 if (entityReference != null)
                                 {
@@ -557,23 +659,7 @@
             entity.RelatedEntities.Add(linesRelationship, new EntityCollection(children));
             UpdateRequest request = new UpdateRequest() { Target = entity };
             this.CallCrmExecuteWebMethod(request);
-        }
-
-        /// <summary>
-        /// Sets the child line entities to be in a created state.
-        /// </summary>
-        /// <param name="children">The child entity lines to be created.</param>
-        private static void CreateNewLines(Entity[] children)
-        {
-            var newLines = from newLine in children where newLine.Id == Guid.Empty select newLine;
-            if (newLines != null && newLines.Count() > 0)
-            {
-                foreach (Entity line in newLines)
-                {
-                    line.EntityState = EntityState.Created;
-                }
-            }
-        }
+        }        
 
         /// <summary>
         /// Issues a <c>CreateRequest</c> to the target <c>CrmService</c>.
@@ -597,7 +683,7 @@
             }            
 
             CreateRequest request = new CreateRequest() { Target = entity };
-            if(this.DoesDetectDuplicates == true)
+            if (this.DoesDetectDuplicates == true)
             {
                 request["SuppressDuplicateDetection"] = false;
             }
@@ -788,39 +874,6 @@
         }
 
         /// <summary>
-        /// Detects if duplicates were encountered when sending a create request into CRM.
-        /// </summary>
-        /// <param name="request">The <C>CreateRequest</C> to be sent into CRM.</param>
-        /// <returns>The duplicate <c>Entity</c> which can then be used in an update call into CRM.</returns>
-        private Entity DetectDuplicates(OrganizationRequest request)
-        {
-            Entity target = ((CreateRequest)request).Target;
-            OrganizationRequest dupRequest = new OrganizationRequest("RetrieveDuplicates") { Parameters = new ParameterCollection() };
-            dupRequest.Parameters.Add("BusinessEntity", target);
-            dupRequest.Parameters.Add("MatchingEntityName", target.LogicalName);
-            dupRequest.Parameters.Add("PagingInfo", new PagingInfo() { Count = 2, PageNumber = 1 });
-            OrganizationResponse response = this.CallCrmExecuteWebMethod(dupRequest);
-            if (((EntityCollection)response.Results["DuplicateCollection"]).Entities.Count == 1)
-            {
-                Entity entityToUpdate = ((EntityCollection)response.Results["DuplicateCollection"]).Entities[0];
-                foreach (string prop in target.Attributes.Keys)
-                {
-                    if (prop != this.KeyAttribute)
-                    {
-                        entityToUpdate[prop] = target[prop];
-                    }
-                }
-
-                this.UpdateEntity(entityToUpdate);
-                return entityToUpdate;
-            }
-            else
-            {
-                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.DuplicateDetected, this.ProvidedEntityName)) { ExceptionId = ErrorCodes.DuplicateDetected };
-            }
-        }
-
-        /// <summary>
         /// Sets the state code for this instance.
         /// </summary>
         /// <param name="entity">The <c>Entity</c> to set the state code for.</param>
@@ -860,14 +913,18 @@
         /// <param name="mappedLookupObject">The <c>Dictionary</c> that contains the data for populating the returned <c>EntityReference</c>.</param>
         /// <returns>A new instance of a <c>EntityReference</c> object initialized with the proper values from the target system or null
         /// if the dynamics_integrationkey in the supplied <c>Dictionary</c> is null or empty.</returns> 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1")]
         protected EntityReference MapEntityReference(FieldDefinition field, Dictionary<string, object> mappedLookupObject)
         {
             if (field == null)
             {
                 throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("field")) { ExceptionId = AdapterException.SystemExceptionGuid };
             }
-            
+
+            if (mappedLookupObject == null)
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("mappedLookupObject")) { ExceptionId = AdapterException.SystemExceptionGuid };
+            }
+
             CRM2011AdapterUtilities.ValidateDictionary(mappedLookupObject);
             EntityReference reference = this.GetReferenceInstanceType(field);
             
@@ -891,7 +948,7 @@
 
             if (lookupField != null && lookupEntity != null)
             {
-                var entityCollection = RetrieveEntityReferenceValue(field, lookupEntity, lookupField, mappedLookupObject);
+                var entityCollection = this.RetrieveEntityReferenceValue(field, lookupEntity, lookupField, mappedLookupObject);
                 if (entityCollection != null)
                 {
                     if (entityCollection.Entities.Count != 0)
@@ -935,15 +992,43 @@
             return reference;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1059:MembersShouldNotExposeCertainConcreteTypes", MessageId = "System.Xml.XmlNode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "3"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "2"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
-        protected EntityCollection RetrieveEntityReferenceValue(FieldDefinition field, XmlAttribute lookupName, XmlAttribute lookupFields, Dictionary<string,object> dictionary)
+        /// <summary>
+        /// Retrieves a collection of referenced entities.
+        /// </summary>
+        /// <param name="field">The referencing field from the object definition.</param>
+        /// <param name="lookupName">The name of the CRM <c>EntityReference</c>.</param>
+        /// <param name="lookupFields">The fields that are lookup fields.</param>
+        /// <param name="dictionary">The <c>Dictionary</c> that contains the entity's data.</param>
+        /// <returns>A CRM <c>EntityCollection</c> that contains the referenced entities, or <c>null</c> if none were found.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1059:MembersShouldNotExposeCertainConcreteTypes", MessageId = "System.Xml.XmlNode", Justification = "Lookup fields are XMLAttributes in the configuration file.")]
+        protected EntityCollection RetrieveEntityReferenceValue(FieldDefinition field, XmlAttribute lookupName, XmlAttribute lookupFields, Dictionary<string, object> dictionary)
         {
+            if (field == null)
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("field")) { ExceptionId = AdapterException.SystemExceptionGuid };
+            }
+
+            if (lookupName == null)
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("lookupName")) { ExceptionId = AdapterException.SystemExceptionGuid };
+            }
+
+            if (lookupFields == null)
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("lookupFields")) { ExceptionId = AdapterException.SystemExceptionGuid };
+            }
+
+            if (dictionary == null)
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentNullExceptionMessage), new ArgumentNullException("dictionary")) { ExceptionId = AdapterException.SystemExceptionGuid };
+            }
+
             if (field.Name.Equals("attachmentid"))
             {
                 return null;
             }
 
-            if(field.Name.Equals("ownerid"))
+            if (field.Name.Equals("ownerid"))
             {
                 if (dictionary["LogicalName"].ToString() == "team")
                 {
@@ -972,7 +1057,7 @@
                 return null;
             }
 
-            var returned =  (RetrieveMultipleResponse)this.CallCrmExecuteWebMethod(retrieveRequest);
+            var returned = (RetrieveMultipleResponse)this.CallCrmExecuteWebMethod(retrieveRequest);
             return returned.EntityCollection;            
         }
 
@@ -1011,8 +1096,8 @@
 
             if ((bool)entity[CRM2011AdapterUtilities.IsNew] == true)
             {
-                entity[this.KeyAttribute]= parentKey;
-				entity.Id = parentKey;
+                entity[this.KeyAttribute] = parentKey;
+                entity.Id = parentKey;
                 this.CreateNewEntity(entity);
                 parentKey = entity.Id;
             }
@@ -1117,9 +1202,7 @@
                 }
             }
         }
-
-        // TODO: Look at how I can remove the integration key from this method
-        
+       
         /// <summary>
         /// Removes children from a parent that appear to be deleted in the source system.
         /// </summary>
@@ -1130,8 +1213,6 @@
         {
             this.RemoveDeletedChildren(childEntityName, childKeys, CRM2011AdapterUtilities.DynamicsIntegrationKey, parentKey, this.ProvidedEntityName + "id");
         }
-
-        // TODO: Look at how I can remove the integration key from this method
 
         /// <summary>
         /// Removes children from a parent that appear to be deleted in the source system.
@@ -1203,8 +1284,6 @@
             }
         }
 
-        // TODO: Look at how I can remove the integration key from this method
-
         /// <summary>
         /// Called by the WriteParentEntity method after the parent entity has been created to allow for the creation of any associated children entities.
         /// </summary>
@@ -1212,7 +1291,7 @@
         /// <param name="parentKey">The <c>Key</c> that was used in creating the parent entity.</param>
         /// <param name="collectionField">The <c>DefinitionFiled</c> that defines the collection.</param>
         /// <returns>A <c>List</c> of <c>DynamicEntities</c> that contains the children for this entity</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "The base class exposes this so the concrete classes can override it.")]
         protected virtual List<Entity> RetrieveChildEntities(Dictionary<string, object> dictionary, Guid parentKey, FieldDefinition collectionField)
         {
             if (dictionary == null || collectionField == null)
@@ -1252,7 +1331,7 @@
 
             List<string> attributes = new List<string>();
             List<FieldDefinition> defs = new List<FieldDefinition>();
-            foreach(FieldDefinition def in this.ObjectDefinition.ToComplexType().Fields)
+            foreach (FieldDefinition def in this.ObjectDefinition.ToComplexType().Fields)
             {
                 if (!(def.TypeDefinition is CollectionType))
                 {
@@ -1283,7 +1362,7 @@
             ColumnSet cols = new ColumnSet() { Columns = { keyPropertyName } };
             retrieveRequest.Query = CRM2011AdapterUtilities.GetReaderQueryExpression(this.ProvidedEntityName, date, this.CrmAdapter, isDynamic, cols);
 
-            var retrievedEntities = GetKeys(retrieveRequest);
+            var retrievedEntities = this.GetKeys(retrieveRequest);
             
             List<Guid> keyList = new List<Guid>();
             retrievedEntities.ForEach(be => keyList.Add(be.Id));
@@ -1311,7 +1390,7 @@
             query.PageInfo.PagingCookie = null;
 
             retrieveRequest.Query = query;
-            var retrievedEntities = GetKeys(retrieveRequest);
+            var retrievedEntities = this.GetKeys(retrieveRequest);
 
             List<string> keyList = new List<string>();
             retrievedEntities.ForEach(be => keyList.Add(((EntityReference)be.Attributes["objectid"]).Id.ToString()));
@@ -1332,6 +1411,29 @@
             return retrieveResponse.EntityCollection.Entities.ToList();
         }
 
+        /// <summary>
+        /// Sets the child line entities to be in a created state.
+        /// </summary>
+        /// <param name="children">The child entity lines to be created.</param>
+        private static void CreateNewLines(Entity[] children)
+        {
+            var newLines = from newLine in children where newLine.Id == Guid.Empty select newLine;
+            if (newLines != null && newLines.Count() > 0)
+            {
+                foreach (Entity line in newLines)
+                {
+                    line.EntityState = EntityState.Created;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks if the state of an entity is already properly set and removes it if it is, otherwise it is set.
+        /// </summary>
+        /// <param name="dictionary">The <c>Dictionary</c> that contains the state to be set on the entity.</param>
+        /// <param name="entity">The CRM <c>Entity</c> to set the state on.</param>
+        /// <param name="propertyName">The state code property name.</param>
+        /// <param name="adapter">The <see cref="DynamicCrmAdapter"/> to be used for state name to value conversions.</param>
         private static void CheckStateAndStatus(Dictionary<string, object> dictionary, Entity entity, string propertyName, DynamicCrmAdapter adapter)
         {
             int stateToSet = (int)dictionary[propertyName];
@@ -1383,6 +1485,11 @@
             return status;
         }
 
+        /// <summary>
+        /// Checks a supplied string to determine if it can be converted into a <see cref="Guid"/>.
+        /// </summary>
+        /// <param name="guidString">The <see cref="String"/> to be validated.</param>
+        /// <returns><c>True</c> if the <see cref="String"/> can be converted into a <see cref="Guid"/>, false otherwise.</returns>
         private static bool IsValidGuidString(string guidString)
         {
             try
@@ -1395,7 +1502,6 @@
                 return false;
             }
         }
-
 
         /// <summary>
         /// Removes properties from the <c>Entity</c> that are not needed.
@@ -1413,6 +1519,10 @@
             }
         }
 
+        /// <summary>
+        /// Sets the owning user and override created on entity attributes.
+        /// </summary>
+        /// <param name="entity">The CRM <c>Entity</c> instance that is about to be created.</param>
         private static void PrepEntityForCreate(Entity entity)
         {
             // on a create, it appears we need to set the owningid
@@ -1425,6 +1535,195 @@
             {
                 entity["overriddencreatedon"] = entity["createdon"];
             }            
+        }
+
+        /// <summary>
+        /// Populates a <c>Dictionary</c> with the values contained in a <c>DynamicEntity</c>.
+        /// </summary>
+        /// <param name="dynamicEntity">The <c>DynamicEntity</c> to get the properties and data from.</param>
+        /// <param name="complexTypeDictionary">The <c>Dictionary</c> to be populated.</param>
+        /// <param name="property">The property on the <c>DynamicEntity</c> to populate the supplied <c>Dictionary</c> for.</param>
+        private static void PopulateDictionary(Entity dynamicEntity, Dictionary<string, object> complexTypeDictionary, KeyValuePair<string, object> property)
+        {
+            List<PropertyInfo> propertyList = new List<PropertyInfo>(dynamicEntity[property.Key].GetType().GetProperties());
+            foreach (PropertyInfo info in propertyList)
+            {
+                // Properties in the list that are instances of the actual type are not needed for our purposes
+                if (!dynamicEntity[property.Key].GetType().Name.Contains(info.PropertyType.Name))
+                {
+                    object propertyValue = info.GetValue(dynamicEntity[property.Key], null);
+
+                    // Do not map null properties
+                    if (propertyValue != null)
+                    {
+                        complexTypeDictionary.Add(info.Name, propertyValue);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Populates a <c>Dictionary</c> with the values contained in a <c>DynamicEntity</c>.
+        /// </summary>
+        /// <param name="dynamicEntity">The <c>DynamicEntity</c> to get the properties and data from.</param>
+        /// <param name="complexTypeDictionary">The <c>Dictionary</c> to be populated.</param>
+        /// <param name="property">The property on the <c>DynamicEntity</c> to populate the supplied <c>Dictionary</c> for.</param>
+        /// <param name="adapter">An instance of a <c>CRMAdapter</c> to use when getting dynamics_integrationkey data for a <c>Lookup</c> type.</param>
+        /// <param name="definition">The <see cref="FieldDefinition"/> for the referenced entity.</param>
+        private static void PopulateDictionary(Entity dynamicEntity, Dictionary<string, object> complexTypeDictionary, KeyValuePair<string, object> property, DynamicCrmAdapter adapter, FieldDefinition definition)
+        {
+            PopulateDictionary(dynamicEntity, complexTypeDictionary, property);
+
+            if (complexTypeDictionary.ContainsKey("Id") && complexTypeDictionary.ContainsKey("LogicalName"))
+            {
+                if (complexTypeDictionary["LogicalName"].ToString() != "attachment" && complexTypeDictionary["LogicalName"].ToString() != "activitymimeattachment")
+                {
+                    ColumnSet cols = new ColumnSet(true);
+                    if (!CRM2011AdapterUtilities.GetIntegratedEntities().Contains(complexTypeDictionary["LogicalName"].ToString()))
+                    {
+                        cols = new ColumnSet(true);
+                    }
+
+                    RetrieveRequest request = new RetrieveRequest() { ColumnSet = cols, Target = new EntityReference(complexTypeDictionary["LogicalName"].ToString(), new Guid(complexTypeDictionary["Id"].ToString())) };
+                    RetrieveResponse response = adapter.OrganizationService.Execute(request) as RetrieveResponse;
+                    Entity entity = response.Entity;
+
+                    var lookupType = definition.AdditionalAttributes.FirstOrDefault(x => x.Name == "LookupType");
+                    var lookupField = definition.AdditionalAttributes.FirstOrDefault(x => x.Name == "LookupField");
+
+                    var typeSplit = lookupType.Value.Split(',');
+                    var fieldSplit = lookupField.Value.Split(',');
+
+                    var keyValueLookup = new List<KeyValuePair<string, string>>();
+
+                    if (typeSplit.Count() > 1 && fieldSplit.Count() > 1)
+                    {
+                        for (int i = 0; i < typeSplit.Count(); i++)
+                        {
+                            keyValueLookup.Add(new KeyValuePair<string, string>(typeSplit[i], fieldSplit[i]));
+                        }
+
+                        lookupField.Value = keyValueLookup.FirstOrDefault(x => x.Key == entity.LogicalName).Value;
+                    }
+
+                    if (lookupField != null)
+                    {
+                        if (lookupField.Value == "domainname" || entity.LogicalName == "systemuser")
+                        {
+                            lookupField.Value = "fullname";
+                        }
+                        else if (entity.LogicalName == "activitypointer")
+                        {
+                            lookupField.Value = "activityid";
+                        }
+
+                        complexTypeDictionary.Add(lookupField.Value, entity[lookupField.Value]);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Populates a <c>Dictionary</c> with the values contained in a <c>DynamicEntity</c>.
+        /// </summary>
+        /// <param name="dynamicEntity">The <c>DynamicEntity</c> to get the properties and data from.</param>
+        /// <param name="complexTypeDictionary">The <c>Dictionary</c> to be populated.</param>
+        /// <param name="property">The property on the <c>DynamicEntity</c> to populate the supplied <c>Dictionary</c> for.</param>
+        /// <param name="adapter">An instance of a <c>CRMAdapter</c> to use when getting dynamics_integrationkey data for a <c>Lookup</c> type.</param>
+        private static void PopulateOptionSetValueDictionary(Entity dynamicEntity, Dictionary<string, object> complexTypeDictionary, KeyValuePair<string, object> property, DynamicCrmAdapter adapter)
+        {
+            PopulateDictionary(dynamicEntity, complexTypeDictionary, property);
+
+            if (!complexTypeDictionary.ContainsKey("name"))
+            {
+                RetrieveAttributeRequest attribReq = new RetrieveAttributeRequest() { EntityLogicalName = dynamicEntity.LogicalName, LogicalName = property.Key, RetrieveAsIfPublished = true };
+
+                // Get the attribute metadata for the state attribute.
+                RetrieveAttributeResponse metadataResponse = (RetrieveAttributeResponse)adapter.OrganizationService.Execute(attribReq);
+
+                PicklistAttributeMetadata picklistAttrib = metadataResponse.AttributeMetadata as PicklistAttributeMetadata;
+                StateAttributeMetadata stateAttrib = metadataResponse.AttributeMetadata as StateAttributeMetadata;
+                IEnumerable<string> picklistValue = null;
+                if (picklistAttrib != null)
+                {
+                    picklistValue = from option in picklistAttrib.OptionSet.Options
+                                    where option.Value == ((OptionSetValue)property.Value).Value
+                                    select option.Label.UserLocalizedLabel.Label;
+                }
+                else if (stateAttrib != null)
+                {
+                    picklistValue = from option in stateAttrib.OptionSet.Options
+                                    where option.Value == ((OptionSetValue)property.Value).Value
+                                    select option.Label.UserLocalizedLabel.Label;
+                }
+
+                // ensure that both the returned list and the first item in the returned list are not null or empty.
+                if (picklistValue != null && picklistValue.Count() > 0 && picklistValue.First() != null)
+                {
+                    complexTypeDictionary.Add("name", picklistValue.First());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Populates the activity party list for a given CRM <c>Entity</c>.
+        /// </summary>
+        /// <param name="dynamicEntity">The CRM <c>Entity</c> to be populated.</param>
+        /// <param name="complexTypeDictionary">The <c>Dictionary</c> that contains the <see cref="ComplexType"/> definition.</param>
+        /// <param name="property">The activity properties on the entity that was supplied.</param>
+        /// <param name="adapter">The <see cref="DynamicCrmAdapter"/> to use to when calling into CRM to get the parties.</param>
+        /// <param name="definition">The <see cref="FieldDefinition"/> that contains the data about the activity field.</param>
+        private static void PopulatePartyList(Entity dynamicEntity, Dictionary<string, object> complexTypeDictionary, KeyValuePair<string, object> property, DynamicCrmAdapter adapter, FieldDefinition definition)
+        {
+            PopulateDictionary(dynamicEntity, complexTypeDictionary, property);
+            var tempDictionary = new Dictionary<string, object>();
+
+            foreach (var entity in (DataCollection<Entity>)complexTypeDictionary["Entities"])
+            {
+                var entityDictionary = GetDictionary(entity, adapter, definition.TypeDefinition.Children.ToList());
+
+                var name = entityDictionary["activitypartyid"].ToString();
+                if (name != null && name != string.Empty)
+                {
+                    tempDictionary.Add(name, entityDictionary);
+                }
+            }
+
+            complexTypeDictionary.Add("ActivityParties", tempDictionary);
+        }
+
+        /// <summary>
+        /// Detects if duplicates were encountered when sending a create request into CRM.
+        /// </summary>
+        /// <param name="request">The <C>CreateRequest</C> to be sent into CRM.</param>
+        /// <returns>The duplicate <c>Entity</c> which can then be used in an update call into CRM.</returns>
+        /// <exception cref="AdapterException">Thrown if there are multiple duplicates detected.</exception>
+        private Entity DetectDuplicates(OrganizationRequest request)
+        {
+            Entity target = ((CreateRequest)request).Target;
+            OrganizationRequest dupRequest = new OrganizationRequest("RetrieveDuplicates") { Parameters = new ParameterCollection() };
+            dupRequest.Parameters.Add("BusinessEntity", target);
+            dupRequest.Parameters.Add("MatchingEntityName", target.LogicalName);
+            dupRequest.Parameters.Add("PagingInfo", new PagingInfo() { Count = 2, PageNumber = 1 });
+            OrganizationResponse response = this.CallCrmExecuteWebMethod(dupRequest);
+            if (((EntityCollection)response.Results["DuplicateCollection"]).Entities.Count == 1)
+            {
+                Entity entityToUpdate = ((EntityCollection)response.Results["DuplicateCollection"]).Entities[0];
+                foreach (string prop in target.Attributes.Keys)
+                {
+                    if (prop != this.KeyAttribute)
+                    {
+                        entityToUpdate[prop] = target[prop];
+                    }
+                }
+
+                this.UpdateEntity(entityToUpdate);
+                return entityToUpdate;
+            }
+            else
+            {
+                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.DuplicateDetected, this.ProvidedEntityName)) { ExceptionId = ErrorCodes.DuplicateDetected };
+            }
         }
 
         /// <summary>
@@ -1478,6 +1777,10 @@
             RemoveStatusCode(entity);
         }
 
+        /// <summary>
+        /// Sets the assignee to be the owning user.
+        /// </summary>
+        /// <param name="entity">The CRM <c>Entity</c> to be assigned.</param>
         private void SetOwner(Entity entity)
         {
             OrganizationRequest request = new OrganizationRequest("Assign") { Parameters = new ParameterCollection() };
@@ -1511,6 +1814,7 @@
         /// </summary>
         /// <param name="entity">The <c>Entity</c> to retrieve the <c>ComplexType</c> for</param>
         /// <returns>A <c>ComplexType</c> that encapsulates the <c>Entity</c> instance supplied</returns>
+        /// <exception cref="AdapterException">Thrown if the <see cref="ComplexType"/> was not found in the object definition.</exception>
         private ComplexType GetComplexTypeFromEntity(Entity entity)
         {
             ComplexType ct = ObjectDefinition.Types.FirstOrDefault(f => f.Name == entity.LogicalName) as ComplexType;
@@ -1552,36 +1856,17 @@
         }
 
         /// <summary>
-        /// Gets an instance of the <c>Entity</c> class that can be used for delete operations
+        /// Queries CRM for the entity with the supplied id.
         /// </summary>
-        /// <param name="queryValue">The value of the integration key for a deleted entity.</param>
-        /// /// <param name="keyProperty">The name of the entity's key property.</param>
-        /// <param name="entityName">The name of the entity.</param>
-        /// <param name="attributes">The attributes to include on the <c>Entity</c> instance</param>
-        /// <returns>An <c>Entity</c> that contains a deleted instance of a <c>BusinessEntity</c>.</returns>
-        internal Entity GetDynamicInstanceToDelete(string queryValue, string keyProperty, string entityName, params string[] attributes)
+        /// <param name="entityUniqueId">The <see cref="Guid"/> for the entity to be queried for as a <see cref="String"/>.</param>
+        /// <param name="entityName">The name of the CRM entity to be queried for, for example account.</param>
+        /// <returns>An instance of the CRM entity class that is the entity that was queried for or <C>null</C> if it is not found.</returns>
+        /// <exception cref="AdapterException">Thrown if multiple entity instance are returned from the query.</exception>
+        private Entity QueryByEntityKey(string entityUniqueId, string entityName)
         {
-            RetrieveMultipleResponse retrieveResponse = this.RetrieveMultipleDynamicEntities(queryValue, keyProperty, entityName, attributes);
-
-            if (retrieveResponse.EntityCollection.Entities.Count == 1)
+            if (IsValidGuidString(entityUniqueId))
             {
-                return retrieveResponse.EntityCollection.Entities[0] as Entity;
-            }
-            else if (retrieveResponse.EntityCollection.Entities.Count < 1)
-            {
-                return QueryByEntityKey(queryValue, entityName);
-            }
-            else
-            {
-                throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.MultipleDynamicEntitiesReturnedExceptionMessage, entityName, keyProperty, queryValue)) { ExceptionId = ErrorCodes.DeleteResponseMultipleResult };
-            }
-        }
-
-        private Entity QueryByEntityKey(string queryValue, string entityName)
-        {
-            if (IsValidGuidString(queryValue))
-            {
-                RetrieveMultipleResponse retrieveResponse = this.RetrieveMultipleDynamicEntities(queryValue, entityName + "id", entityName);
+                RetrieveMultipleResponse retrieveResponse = this.RetrieveMultipleDynamicEntities(entityUniqueId, entityName + "id", entityName);
                 if (retrieveResponse.EntityCollection.Entities.Count == 1)
                 {
                     return retrieveResponse.EntityCollection.Entities[0] as Entity;
@@ -1589,26 +1874,11 @@
 
                 if (retrieveResponse.EntityCollection.Entities.Count > 1)
                 {
-                    throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.MultipleDynamicEntitiesReturnedExceptionMessage, entityName, CRM2011AdapterUtilities.DynamicsIntegrationKey, queryValue)) { ExceptionId = ErrorCodes.DeleteResponseMultipleResult };
+                    throw new AdapterException(string.Format(CultureInfo.CurrentCulture, Resources.MultipleDynamicEntitiesReturnedExceptionMessage, entityName, CRM2011AdapterUtilities.DynamicsIntegrationKey, entityUniqueId)) { ExceptionId = ErrorCodes.DeleteResponseMultipleResult };
                 }
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Calls the CRM service and retrieves the entities that match the modifiedDateValue expression that is built up based on the supplied values
-        /// </summary>
-        /// <param name="queryValue">The value of the property to be queried for</param>
-        /// <param name="keyProperty">The attribute to use to use when querying</param>
-        /// <param name="entityName">The name of the entity to be queried for</param>
-        /// <param name="attributes">The attributes to include on the <c>Entity</c> instance</param>
-        /// <returns>A <c>RetrieveMaultipleResponse</c> that contains the <c>DynamicEntities</c> that matched the supplied values</returns>
-        internal RetrieveMultipleResponse RetrieveMultipleDynamicEntities(string queryValue, string keyProperty, string entityName, params string[] attributes)
-        {
-            RetrieveMultipleRequest retrieveRequest = new RetrieveMultipleRequest();
-            retrieveRequest.Query = CRM2011AdapterUtilities.GetQueryExpression(entityName, keyProperty, queryValue, attributes);
-            return (RetrieveMultipleResponse)this.CallCrmExecuteWebMethod(retrieveRequest);
         }
 
         /// <summary>
@@ -1630,6 +1900,10 @@
             }
         }
 
+        /// <summary>
+        /// Gets the CRM price level for the base currency of the organization.
+        /// </summary>
+        /// <returns>A CRM <c>Entity</c> that is the price level for the base currency.</returns>
         private Entity GetBaseCurrencyPriceLevel()
         {
             ColumnSet cols = new ColumnSet() { Columns = { "pricelevelid" } };
@@ -1637,213 +1911,6 @@
             RetrieveMultipleRequest request = new RetrieveMultipleRequest() { Query = queryAtrib };
             RetrieveMultipleResponse response = (RetrieveMultipleResponse)this.CallCrmExecuteWebMethod(request);
             return response.EntityCollection.Entities.FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Gets a <c>Dictionary</c> that represents a <c>DynamicEntity</c>.
-        /// </summary>
-        /// <param name="entity">The CRM <c>Entity</c> to return as a <c>Dictioanry</c>.</param>
-        /// <param name="adapter">An instance of a <c>CRMAdapter</c> to use when getting dynamics_integrationkey data for a <c>Lookup</c> type.</param>
-        /// <param name="fieldDefinitions">The <C>List</C> of <see cref="FieldDefinition"/>s to use when populating the <C>Dictionary</C>.</param>
-        /// <returns>A <c>Dictionary</c> that has Keys that are the property names of the <c>DynamicEntity</c> supplied and 
-        /// Values that are the values of those properties on the <c>DynamicEntity</c>.</returns>
-        internal static Dictionary<string, object> GetDictionary(Entity entity, DynamicCrmAdapter adapter, List<FieldDefinition> fieldDefinitions)
-        {
-            Dictionary<string, object> dictionary = new Dictionary<string, object>();
-
-            // This dictionary is for holding a complexType that might be the type for the current property on the entity
-            Dictionary<string, object> holdingDictionary;
-            foreach (KeyValuePair<string, object> property in entity.Attributes)
-            {
-                // CrmMoney needs the dictionary to be converted but it also starts with the same prefix as the property types that do not,so handle it separately
-                // else if the property is not one of the Built-in types and is also not of the StringProperty type, use the holding dictionary
-                Type propertyType = property.Value.GetType();
-                holdingDictionary = new Dictionary<string, object>();
-                if (propertyType == typeof(Money))
-                {
-                    PopulateDictionary(entity, holdingDictionary, property);
-                }
-                else if (propertyType == typeof(OptionSetValue))
-                {
-                    PopulateOptionSetValueDictionary(entity, holdingDictionary, property, adapter);
-                }
-                else if (propertyType == typeof(EntityReference))
-                {
-                    FieldDefinition definition = fieldDefinitions.FirstOrDefault(x => x.Name == property.Key);
-                    PopulateDictionary(entity, holdingDictionary, property, adapter, definition);
-                }
-                else if (propertyType == typeof(EntityCollection))
-                {
-                    FieldDefinition definition = fieldDefinitions.FirstOrDefault(x => x.Name == property.Key);
-                    PopulatePartyList(entity, holdingDictionary, property, adapter, definition);
-                }
-
-                // The property is of a ComplexType and the holding dictionary was populated
-                // else if the property is one of the Built-in CRM types just convert it
-                // else if the property was a string property, just use its value
-                if (holdingDictionary.Count > 0)
-                {
-                    dictionary.Add(property.Key, holdingDictionary);
-                }
-                else
-                {
-                    dictionary.Add(property.Key, property.Value);
-                }
-            }
-
-            if (fieldDefinitions.Any(x => x.Name == "overriddencreatedon"))
-            {
-                dictionary.Add("overriddencreatedon", null);
-            }
-
-            return dictionary;
-        }
-
-        /// <summary>
-        /// Populates a <c>Dictionary</c> with the values contained in a <c>DynamicEntity</c>.
-        /// </summary>
-        /// <param name="dynamicEntity">The <c>DynamicEntity</c> to get the properties and data from.</param>
-        /// <param name="complexTypeDictionary">The <c>Dictionary</c> to be populated.</param>
-        /// <param name="property">The property on the <c>DynamicEntity</c> to populate the supplied <c>Dictionary</c> for.</param>
-        private static void PopulateDictionary(Entity dynamicEntity, Dictionary<string, object> complexTypeDictionary, KeyValuePair<string, object> property)
-        {
-            List<PropertyInfo> propertyList = new List<PropertyInfo>(dynamicEntity[property.Key].GetType().GetProperties());
-            foreach (PropertyInfo info in propertyList)
-            {
-                // Properties in the list that are instances of the actual type are not needed for our purposes
-                if (!dynamicEntity[property.Key].GetType().Name.Contains(info.PropertyType.Name))
-                {
-                    object propertyValue = info.GetValue(dynamicEntity[property.Key], null);
-
-                    // Do not map null properties
-                    if (propertyValue != null)
-                    {
-                        complexTypeDictionary.Add(info.Name, propertyValue);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Populates a <c>Dictionary</c> with the values contained in a <c>DynamicEntity</c>.
-        /// </summary>
-        /// <param name="dynamicEntity">The <c>DynamicEntity</c> to get the properties and data from.</param>
-        /// <param name="complexTypeDictionary">The <c>Dictionary</c> to be populated.</param>
-        /// <param name="property">The property on the <c>DynamicEntity</c> to populate the supplied <c>Dictionary</c> for.</param>
-        /// <param name="adapter">An instance of a <c>CRMAdapter</c> to use when getting dynamics_integrationkey data for a <c>Lookup</c> type.</param>
-        /// <param name="definition">The <see cref="FieldDefinition"/> for the referenced entity.</param>
-        private static void PopulateDictionary(Entity dynamicEntity, Dictionary<string, object> complexTypeDictionary, KeyValuePair<string, object> property, DynamicCrmAdapter adapter, FieldDefinition definition)
-        {
-            PopulateDictionary(dynamicEntity, complexTypeDictionary, property);
-            
-            if (complexTypeDictionary.ContainsKey("Id") && complexTypeDictionary.ContainsKey("LogicalName"))
-            {
-                if (complexTypeDictionary["LogicalName"].ToString() != "attachment" && complexTypeDictionary["LogicalName"].ToString() != "activitymimeattachment")
-                {
-                    ColumnSet cols = new ColumnSet(true);
-                    if (!CRM2011AdapterUtilities.GetIntegratedEntities().Contains(complexTypeDictionary["LogicalName"].ToString()))
-                    {
-                        cols = new ColumnSet(true);
-                    }
-
-                    RetrieveRequest request = new RetrieveRequest() { ColumnSet = cols, Target = new EntityReference(complexTypeDictionary["LogicalName"].ToString(), new Guid(complexTypeDictionary["Id"].ToString())) };
-                    RetrieveResponse response = adapter.OrganizationService.Execute(request) as RetrieveResponse;
-                    Entity entity = response.Entity;
-                    
-                    var lookupType = definition.AdditionalAttributes.FirstOrDefault(x => x.Name == "LookupType");
-                    var lookupField = definition.AdditionalAttributes.FirstOrDefault(x => x.Name == "LookupField");
-
-                    var typeSplit = lookupType.Value.Split(',');
-                    var fieldSplit = lookupField.Value.Split(',');
-
-                    var keyValueLookup = new List<KeyValuePair<string,string>>();
-
-                    if (typeSplit.Count() > 1 && fieldSplit.Count() > 1)
-                    {
-                        for (int i = 0; i < typeSplit.Count(); i++)
-                        {
-                            keyValueLookup.Add(new KeyValuePair<string, string>(typeSplit[i], fieldSplit[i]));
-                        }
-
-                        lookupField.Value = keyValueLookup.FirstOrDefault(x=> x.Key == entity.LogicalName).Value;
-                    }
-
-                    if (lookupField != null)
-                    {
-                        if (lookupField.Value == "domainname" || entity.LogicalName == "systemuser")
-                        {
-                            lookupField.Value = "fullname";
-                        }
-                        else if (entity.LogicalName == "activitypointer")
-                        {
-                            lookupField.Value = "activityid";
-                        }
-
-                        complexTypeDictionary.Add(lookupField.Value, entity[lookupField.Value]);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Populates a <c>Dictionary</c> with the values contained in a <c>DynamicEntity</c>.
-        /// </summary>
-        /// <param name="dynamicEntity">The <c>DynamicEntity</c> to get the properties and data from.</param>
-        /// <param name="complexTypeDictionary">The <c>Dictionary</c> to be populated.</param>
-        /// <param name="property">The property on the <c>DynamicEntity</c> to populate the supplied <c>Dictionary</c> for.</param>
-        /// <param name="adapter">An instance of a <c>CRMAdapter</c> to use when getting dynamics_integrationkey data for a <c>Lookup</c> type.</param>
-        private static void PopulateOptionSetValueDictionary(Entity dynamicEntity, Dictionary<string, object> complexTypeDictionary, KeyValuePair<string, object> property, DynamicCrmAdapter adapter)
-        {
-            PopulateDictionary(dynamicEntity, complexTypeDictionary, property);
-
-            if (!complexTypeDictionary.ContainsKey("name"))
-            {
-                RetrieveAttributeRequest attribReq = new RetrieveAttributeRequest() { EntityLogicalName = dynamicEntity.LogicalName, LogicalName = property.Key, RetrieveAsIfPublished = true };
-                
-                // Get the attribute metadata for the state attribute.
-                RetrieveAttributeResponse metadataResponse = (RetrieveAttributeResponse)adapter.OrganizationService.Execute(attribReq);
-
-                PicklistAttributeMetadata picklistAttrib = metadataResponse.AttributeMetadata as PicklistAttributeMetadata;
-                StateAttributeMetadata stateAttrib = metadataResponse.AttributeMetadata as StateAttributeMetadata;
-                IEnumerable<string> picklistValue = null;
-                if (picklistAttrib != null)
-                {
-                    picklistValue = from option in picklistAttrib.OptionSet.Options
-                                    where option.Value == ((OptionSetValue)property.Value).Value
-                                    select option.Label.UserLocalizedLabel.Label;
-                }
-                else if(stateAttrib != null)
-                {
-                    picklistValue = from option in stateAttrib.OptionSet.Options
-                                    where option.Value == ((OptionSetValue)property.Value).Value
-                                    select option.Label.UserLocalizedLabel.Label;
-                }                
-
-                // ensure that both the returned list and the first item in the returned list are not null or empty.
-                if (picklistValue != null && picklistValue.Count() > 0 && picklistValue.First() != null)
-                {
-                    complexTypeDictionary.Add("name", picklistValue.First());
-                }
-            }
-        }
-
-        private static void PopulatePartyList(Entity dynamicEntity, Dictionary<string, object> complexTypeDictionary, KeyValuePair<string, object> property, DynamicCrmAdapter adapter, FieldDefinition definition)
-        {
-            PopulateDictionary(dynamicEntity, complexTypeDictionary, property);
-            var tempDictionary = new Dictionary<string, object>();
-
-            foreach (var entity in ((DataCollection<Entity>)complexTypeDictionary["Entities"]))
-            {
-                var entityDictionary = GetDictionary(entity, adapter, definition.TypeDefinition.Children.ToList());
-
-                var name = entityDictionary["activitypartyid"].ToString();
-                if (name != null && name != string.Empty)
-                {
-                    tempDictionary.Add(name, entityDictionary);
-                }
-            }
-
-            complexTypeDictionary.Add("ActivityParties", tempDictionary);
         }
     }
 }
