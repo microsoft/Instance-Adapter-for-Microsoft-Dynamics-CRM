@@ -1683,7 +1683,7 @@
                 var entityDictionary = GetDictionary(entity, adapter, definition.TypeDefinition.Children.ToList());
 
                 var name = entityDictionary["activitypartyid"].ToString();
-                if (name != null && name != string.Empty)
+                if (!string.IsNullOrEmpty(name))
                 {
                     tempDictionary.Add(name, entityDictionary);
                 }

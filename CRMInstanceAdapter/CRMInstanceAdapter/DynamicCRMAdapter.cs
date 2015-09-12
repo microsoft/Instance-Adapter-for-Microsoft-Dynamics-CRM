@@ -219,7 +219,7 @@
         {
             get
             {
-                //Had to place these methods on the source and destination, they'll need to be re-used when the inherited adapters are removed
+                // Had to place these methods on the source and destination, they'll need to be re-used when the inherited adapters are removed
                 return base.ObjectReaderProviders;
             }
         }
@@ -228,7 +228,7 @@
         {
             get
             {
-                //Had to place these methods on the source and destination, they'll need to be re-used when the inherited adapters are removed
+                // Had to place these methods on the source and destination, they'll need to be re-used when the inherited adapters are removed
                 return base.ObjectWriterProviders;
             }
         }
@@ -246,7 +246,6 @@
             }
         }
 
-
         /// <summary>
         /// Gets or sets the URL for calling the CRM Discovery Service.
         /// </summary>
@@ -262,7 +261,6 @@
                 {
                     return new Uri(this.Settings["DiscoveryServiceAddress"]);
                 }
-
             }
 
             set
@@ -436,7 +434,6 @@
             setting.FieldDefinition = GetDiscoveryServiceUrlSetting();
             setting.Value = @"https://<host>:<port>/XRMServices/2011/Discovery.svc";
             propertyChangedSettings.Add(setting);
-            //setting.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DiscoveryUrlPropertyChanged);
             list.Add(setting);
 
             setting = new SettingsValue();
@@ -455,18 +452,18 @@
 
             foreach (var s in propertyChangedSettings)
             {
-                s.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(setting_PropertyChanged);
+                s.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(this.setting_PropertyChanged);
             }
 
             return list;
         }
 
-        void setting_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void setting_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var setting = sender as SettingsValue;
             if (setting != null && (setting.FieldDefinition.Name == DiscoveryURLSettingName || setting.FieldDefinition.Name == UserSettingName || setting.FieldDefinition.Name == PasswordSettingName))
             {
-                this.ConfigUtilityFilePath = GetConfigUtilityPath();
+                this.ConfigUtilityFilePath = this.GetConfigUtilityPath();
             }
         }
 
@@ -476,8 +473,6 @@
             string username = string.IsNullOrWhiteSpace(this.UserName) ? string.Empty : "USERNAME=" + this.UserName;
             string password = string.IsNullOrWhiteSpace(this.UserPassword) ? string.Empty : "USERPASSWORD=" + this.UserPassword;
             string type = "ADAPTERTYPE=" + this.GetType().Name;
-            // TODO: Add argument for initial organization.
-
             return string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3} {4}", ConfigUtilityDefaultFilePath, serverArg, username, password, type);
         }
 
@@ -896,7 +891,6 @@
 
         public Common.ValidationResult ValidateSettings()
         {
-
             var vr = new Common.ValidationResult();
             this.ValidateUserName(vr);
             if (this.DiscoveryServiceUrl.IsNullOrEmptyTrim())
@@ -912,17 +906,11 @@
                 vr.AddError(msg);
             }
             
-//            // allow for disconnected mode, which never makes a connection to the web service.
-//#if DEBUG
-//            bool skipWsValidation = System.Environment.GetEnvironmentVariables().Contains("RUN_DISCONNECTED");
-//#else
-                const bool skipWsValidation = false;
-//#endif
-            
+            const bool SkipWsValidation = false;
             bool validWsConnection = this.ValidateWebServiceConnection();
             
             // Validate the user has proper web service priviledges
-            if (!skipWsValidation && !validWsConnection)
+            if (!SkipWsValidation && !validWsConnection)
             {
                 var msg = string.Format(CultureInfo.CurrentCulture, Resources.ConnectionValidationExceptionMessage, this.UserName, this.DiscoveryServiceUrl);
                 vr.AddError(msg);
@@ -931,14 +919,14 @@
             List<OrganizationDetail> details = this.GetAllOrganizations(vr);
             
             // Validate that there are organizations in CRM and that the user can retrieve them
-            if (!skipWsValidation && validWsConnection && details.Count == 0)
+            if (!SkipWsValidation && validWsConnection && details.Count == 0)
             {
                 var msg = string.Format(CultureInfo.CurrentCulture, Resources.NoOrganizationsExceptionMessage);
                 vr.AddError(msg);
             }
             
             // Validate the user has proper web service priviledges
-            if (!skipWsValidation && validWsConnection && details.Count > 0)
+            if (!SkipWsValidation && validWsConnection && details.Count > 0)
             {
                 this.GetConfiguredOrganizations(true, vr);
             }
