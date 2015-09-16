@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
+﻿namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Enumeration to hold the various event types
     /// </summary>
@@ -36,7 +36,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
     }
 
     /// <summary>
-    /// Holds the paramter names as constants
+    /// Holds the parameter names as constants
     /// </summary>
     internal class Constants
     {
@@ -55,20 +55,23 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
         public const string PrivCheckErrorCode = "0x80040220";
         public const string RegisterXmlFileName = "REGISTERFILENAME";
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="Constants"/> class from being created.
+        /// </summary>
         private Constants()
         {
         }
 
         /// <summary>
-        /// Gets a <c>List</c> that contains all of the paramter names
+        /// Gets a <c>List</c> that contains all of the parameter names
         /// </summary>
         internal static List<string> ArgumentNames
         {
             get
             {
                 return new List<string> 
-				{ 
-				  InstallType, UserDomain, UserName, Password, Organization, CrmAdminName, CrmAdminPassword, 
+				{
+				  InstallType, UserDomain, UserName, Password, Organization, CrmAdminName, CrmAdminPassword,
 				  IntegratedOrganizations, ConfigurationOption, IsProviderConfigureOnly, RegisterXmlFileName, DiscoveryServiceAddress
 				};
             }

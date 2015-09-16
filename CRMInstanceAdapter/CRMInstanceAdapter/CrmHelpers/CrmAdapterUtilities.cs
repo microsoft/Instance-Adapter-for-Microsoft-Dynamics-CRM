@@ -563,6 +563,11 @@
             }
         }
 
+        /// <summary>
+        /// Determines if the supplied CRM <c>Entity</c> is address 1 or 2.
+        /// </summary>
+        /// <param name="childEntity">The CRM <c>customeraddress</c> to be checked.</param>
+        /// <returns>True if the <c>customeraddress</c> that was supplied is address 1 or 2.</returns>
         internal static bool IsAddressOneOrTwo(Entity childEntity)
         {
             if (childEntity.Contains("addressnumber"))
@@ -574,45 +579,74 @@
             return false;
         }
 
+        /// <summary>
+        /// Determines if an option set is one of the customer address 1 or 2 option sets.
+        /// </summary>
+        /// <param name="entity">The CRM <c>Entity</c> surrently being integrated.</param>
+        /// <param name="field">The <see cref="FieldDefinition"/> for the CRM attribute curently being integrated.</param>
+        /// <returns>True if the field is one of the customer address 1 or 2 fields, false otherwise.</returns>
         internal static bool IsSpecialAddressPicklist(Entity entity, FieldDefinition field)
         {
             return entity.LogicalName == "customeraddress" && GetSpecialAddressPicklistFields().Contains(field.Name) && entity.Contains("addressnumber") && IsAddressOneOrTwo(entity);
         }
 
-        internal static OrganizationRequest GetContractCancelRequest(int statusToSet, Guid entityId)
+        /// <summary>
+        /// Gets a CRM <c>OrganizationRequest</c> that can be used to cancel a <c>contract</c>.
+        /// </summary>
+        /// <param name="statusToSet">The <c>statuscode</c> to set on the cancel request.</param>
+        /// <param name="contractEntityId">The unique id of the <c>contract</c> to be canceled.</param>
+        /// <returns>A CRM <c>OrganizationRequest</c> for canceling the supplied <c>contract</c>.</returns>
+        internal static OrganizationRequest GetContractCancelRequest(int statusToSet, Guid contractEntityId)
         {
             OrganizationRequest request = new OrganizationRequest("CancelContract") { Parameters = new ParameterCollection() };
             request.Parameters.Add(new KeyValuePair<string, object>("Status", statusToSet));
             request.Parameters.Add(new KeyValuePair<string, object>("CancelDate", DateTime.Now.ToUniversalTime()));
-            request.Parameters.Add(new KeyValuePair<string, object>("ContractId", entityId));
+            request.Parameters.Add(new KeyValuePair<string, object>("ContractId", contractEntityId));
             return request;
         }
 
-        internal static OrganizationRequest GetIncidentCloseRequest(int statusToSet, Guid entityId)
+        /// <summary>
+        /// Gets a CRM <c>OrganizationRequest</c> that can be used to close an <c>incident</c>.
+        /// </summary>
+        /// <param name="statusToSet">The <c>statuscode</c> to set on the close request.</param>
+        /// <param name="incidentEntityId">The unique id of the <c>incident</c> to be closed.</param>
+        /// <returns>A CRM <c>OrganizationRequest</c> for closing the supplied <c>incident</c>.</returns>
+        internal static OrganizationRequest GetIncidentCloseRequest(int statusToSet, Guid incidentEntityId)
         {
             OrganizationRequest request = new OrganizationRequest("CloseIncident") { Parameters = new ParameterCollection() };
             request.Parameters.Add(new KeyValuePair<string, object>("Status", statusToSet));
-            request.Parameters.Add(new KeyValuePair<string, object>("IncidentResolution", new EntityReference("incident", entityId)));
+            request.Parameters.Add(new KeyValuePair<string, object>("IncidentResolution", new EntityReference("incident", incidentEntityId)));
             return request;
         }
 
-        internal static OrganizationRequest GetOpportunityLoseRequest(int statusToSet, Guid entityId)
+        /// <summary>
+        /// Gets a CRM <c>OrganizationRequest</c> that can be used to lose an <c>opportunity</c>.
+        /// </summary>
+        /// <param name="statusToSet">The <c>statuscode</c> to set on the lose request.</param>
+        /// <param name="opportunityEntityId">The unique id of the <c>opportunity</c> to be closed.</param>
+        /// <returns>A CRM <c>OrganizationRequest</c> for losing the supplied <c>opportunity</c>.</returns>
+        internal static OrganizationRequest GetOpportunityLoseRequest(int statusToSet, Guid opportunityEntityId)
         {
             OrganizationRequest request = new OrganizationRequest("LoseOpportunity") { Parameters = new ParameterCollection() };
             request.Parameters.Add(new KeyValuePair<string, object>("Status", statusToSet));
-            request.Parameters.Add(new KeyValuePair<string, object>("OpportunityClose", new EntityReference("opportunity", entityId)));
+            request.Parameters.Add(new KeyValuePair<string, object>("OpportunityClose", new EntityReference("opportunity", opportunityEntityId)));
             return request;
         }
 
+        /// <summary>
+        /// Gets a <see cref="ComplexType"/> for a CRM <c>EntityReference</c>.
+        /// </summary>
+        /// <param name="objDef">The <see cref="ObjectDefinition"/> to retrieve the CRM <c>EntityReference</c> values from.</param>
+        /// <param name="complexTypeName">The name for the returned <see cref="ComplexType"/>.</param>
+        /// <returns>A <see cref="ComplexType"/> that contains the values of the attributes from the CRM <c>EntityReference</c>.</returns>
         private static ComplexType GetComplexTypeForReference(ObjectDefinition objDef, string complexTypeName)
         {
             System.Collections.ObjectModel.ObservableCollection<FieldDefinition> fields = new System.Collections.ObjectModel.ObservableCollection<FieldDefinition>();
-
             fields.Add(GenerateFieldAndAddType(objDef, typeof(string), "name", "Name", false, true));
             fields.Add(GenerateFieldAndAddType(objDef, typeof(string), "type", "Type", false, true));
             fields.Add(GenerateFieldAndAddType(objDef, typeof(Guid), "Value", "ID", false, true));
 
-            var tempType = new ComplexType() { ClrType = typeof(System.Collections.Generic.Dictionary<string, object>), Name = complexTypeName };
+            var tempType = new ComplexType() { ClrType = typeof(Dictionary<string, object>), Name = complexTypeName };
             tempType.Fields.AddRange(fields);
             return tempType;
         }
@@ -620,11 +654,10 @@
         private static ComplexType GetComplexTypeForPicklist(ObjectDefinition objDef)
         {
             System.Collections.ObjectModel.ObservableCollection<FieldDefinition> fields = new System.Collections.ObjectModel.ObservableCollection<FieldDefinition>();
-
             fields.Add(GenerateFieldAndAddType(objDef, typeof(string), "name", "Name", false, false));
             fields.Add(GenerateFieldAndAddType(objDef, typeof(int?), "Value", "Value", false, false));
 
-            var tempType = new ComplexType() { ClrType = typeof(System.Collections.Generic.Dictionary<string, object>), Name = "OptionSetValue" };
+            var tempType = new ComplexType() { ClrType = typeof(Dictionary<string, object>), Name = "OptionSetValue" };
             tempType.Fields.AddRange(fields);
             return tempType;
         }
@@ -633,6 +666,7 @@
         {
             System.Collections.ObjectModel.ObservableCollection<FieldDefinition> fields = new System.Collections.ObjectModel.ObservableCollection<FieldDefinition>();
             fields.Add(GenerateFieldAndAddType(objDef, typeof(int?), "Value", "Value", false, false));
+
             var tempType = new ComplexType() { ClrType = typeof(System.Collections.Generic.Dictionary<string, object>), Name = "Status" };
             tempType.Fields.AddRange(fields);
             return tempType;
@@ -642,6 +676,7 @@
         {
             System.Collections.ObjectModel.ObservableCollection<FieldDefinition> fields = new System.Collections.ObjectModel.ObservableCollection<FieldDefinition>();
             fields.Add(GenerateFieldAndAddType(objDef, typeof(decimal?), "Value", "Value", false, false));
+
             var tempType = new ComplexType() { ClrType = typeof(System.Collections.Generic.Dictionary<string, object>), Name = "Money" };
             tempType.Fields.AddRange(fields);
             return tempType;
@@ -707,20 +742,15 @@
         private static ComplexType GetComplexTypeForPartyList(ObjectDefinition objDef, string complexTypeName)
         {
             System.Collections.ObjectModel.ObservableCollection<FieldDefinition> fields = new System.Collections.ObjectModel.ObservableCollection<FieldDefinition>();
-
             fields.Add(GenerateFieldAndAddType(objDef, typeof(Guid), "activitypartyid", "Activity Party ID", false, true));
-
             fields.Add(GenerateFieldAndAddType(objDef, typeof(EntityReference), "ownerid", "Owner ID", "EntityReference", false, true));
-
             fields.Add(GenerateFieldAndAddType(objDef, typeof(OptionSetValue), "participationtypemask", "Participation Type Mask", "OptionSetValue", false, true));
-
             fields.Add(GenerateFieldAndAddType(objDef, typeof(EntityReference), "activityid", "Activity ID", "EntityReference", false, true));
             fields.Add(GenerateFieldAndAddType(objDef, typeof(bool), "ispartydeleted", "IsPartyDeleted", false, true));
-
             fields.Add(GenerateFieldAndAddType(objDef, typeof(EntityReference), "partyid", "Party ID", "EntityReference", false, true));
             fields.Add(GenerateFieldAndAddType(objDef, typeof(OptionSetValue), "instancetypecode", "Instance Type Code", "OptionSetValue", false, true));
 
-            var tempType = new ComplexType() { ClrType = typeof(System.Collections.Generic.Dictionary<string, object>), Name = complexTypeName };
+            var tempType = new ComplexType() { ClrType = typeof(Dictionary<string, object>), Name = complexTypeName };
             tempType.Fields.AddRange(fields);
             return tempType;
         }

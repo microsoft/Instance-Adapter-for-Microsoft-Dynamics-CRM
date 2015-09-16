@@ -1,86 +1,42 @@
-﻿using Microsoft.Dynamics.Integration.AdapterAbstractionLayer;
-using Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration.Properties;
-using Microsoft.Dynamics.Integration.Adapters.DynamicCrm.ObjectProviders;
-using Microsoft.Dynamics.Integration.Common;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Discovery;
-using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Metadata;
-using Microsoft.Xrm.Sdk.Query;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Xml;
-using System.Xml.Serialization;
-using XrmMetadata = Microsoft.Xrm.Sdk.Metadata;
-
-namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
+﻿namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
 {
+    using AdapterAbstractionLayer;
+    using Properties;
+    using ObjectProviders;
+    using Common;
+    using Xrm.Sdk;
+    using Xrm.Sdk.Discovery;
+    using Xrm.Sdk.Messages;
+    using Xrm.Sdk.Metadata;
+    using Xrm.Sdk.Query;
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Xml;
+    using System.Xml.Serialization;
+    using XrmMetadata = Xrm.Sdk.Metadata;
+
+    /// <summary>
+    /// Utility class for holding various utilities for configuring an integration with Dynamics CRM.
+    /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "All classes are needed")]
     public class ConfigurationUtilities
     {
-        #region Fields
         private const string ObjectConfigFolderName = "ObjectConfig";
         private string adapterType;
         private List<ObjectProvider> availableProviders;
-        #endregion
 
-        #region Public Fields
-        public string AdapterType
-        {
-            get
-            {
-                return adapterType;
-            }
-            set
-            {
-                adapterType = value;
-            }
-        }
-        #endregion
-
-        #region Public Methods
-        public void SetAdapter(string typeOfAdapter)
-        {
-            AdapterType = typeOfAdapter;
-
-            if (AdapterType == "DynamicCrmAdapterSource")
-            {
-                this.InstallAdapter = new DynamicCrmAdapterSource();
-            }
-            if (AdapterType == "DynamicCrmAdapterDestination")
-            {
-                this.InstallAdapter = new DynamicCrmAdapterDestination();
-            }
-
-            // Create a new instance of the CRMAdapter class to use when configuring CRM and set any properties listed in the configuration utiltity
-            // app.config file
-            this.SetPropertiesFromAppConfig();
-
-            // Initialize the TraceLog to always log the configuration process
-            TraceLog.Info(FormattedString(Resources.StartMessage));
-            Trace.Indent();
-
-            // Initialize the configuration arguments list, threaded request class, and the install adapter
-            this.InitArguments();
-        }
-        #endregion
-
-        #region Constructor
         /// <summary>
-        /// Initializes a new instance of the ConfigurationUtilities class.
+        /// Initializes a new instance of the <see cref="ConfigurationUtilities"/> class.
         /// </summary>
         public ConfigurationUtilities()
         {
-            
         }
-        #endregion
 
-        #region Events
         /// <summary>
         /// Event that is raised when a configuration event is starting
         /// </summary>
@@ -95,9 +51,20 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
         /// Event that is raised when a configuration event is finishing
         /// </summary>
         internal event EventHandler<ConfigurationEventArgs> ConfigurationEventPost;
-        #endregion
 
-        #region Internal Properties
+        public string AdapterType
+        {
+            get
+            {
+                return this.adapterType;
+            }
+
+            set
+            {
+                this.adapterType = value;
+            }
+        }
+
         /// <summary>
         /// Gets or sets the list of available CRM <c>ObjectProvider</c>s
         /// </summary>
@@ -143,9 +110,32 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
             get;
             private set;
         }
-        #endregion
 
-        #region Internal Methods
+        public void SetAdapter(string typeOfAdapter)
+        {
+            this.AdapterType = typeOfAdapter;
+
+            if (this.AdapterType == "DynamicCrmAdapterSource")
+            {
+                this.InstallAdapter = new DynamicCrmAdapterSource();
+            }
+
+            if (this.AdapterType == "DynamicCrmAdapterDestination")
+            {
+                this.InstallAdapter = new DynamicCrmAdapterDestination();
+            }
+
+            // Create a new instance of the CRMAdapter class to use when configuring CRM and set any properties listed in the configuration utiltity
+            // app.config file
+            this.SetPropertiesFromAppConfig();
+
+            // Initialize the TraceLog to always log the configuration process
+            TraceLog.Info(FormattedString(Resources.StartMessage));
+            Trace.Indent();
+
+            // Initialize the configuration arguments list, threaded request class, and the install adapter
+            this.InitArguments();
+        }   
 
         internal List<ObjectDefinition> LoadObjectDefinitionsFromConfigs()
         {
@@ -164,7 +154,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
                 }
 
                 dynamicObjectDefinitions.Add(def);
-
             }
 
             return dynamicObjectDefinitions;
@@ -280,7 +269,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
             }
         }
 
-
         /// <summary>
         /// Writes out the supplied <c>ObjectProvider</c>'s configuration file
         /// </summary>
@@ -297,7 +285,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
                     this.SetupCompanyConfig(ConfigurationOption.Install);
                 }
 
-                provider.Name = provider.Name.Replace(",Relationship", "");
+                provider.Name = provider.Name.Replace(",Relationship", string.Empty);
 
                 var providerObjectDefinition = this.LoadObjectDefinitionsFromConfigs().FirstOrDefault(str => str.RootDefinition.TypeName.ToUpperInvariant() == provider.Name.ToUpperInvariant());
                 string configFileName = providerObjectDefinition == null ?
@@ -351,8 +339,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
         /// Write out a object definition for the picklist provider
         /// </summary>
         internal void WritePicklistObjectDefinition()
-        {
-            
+        {            
             var provider = new PicklistObjectProvider();
 
             try
@@ -389,7 +376,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
                 }
 
                 this.PublishPostConfigurationMessage(string.Format(CultureInfo.CurrentCulture, Resources.FinishedGeneratingProviderConfiguration, provider.Name));
-
             }
             catch (IOException e)
             {
@@ -405,8 +391,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
         /// <param name="provider">The <c>ObjectProvider</c> to write out the configuration for</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         internal void WriteObjectDefinition(ObjectProvider provider)
-        {
-            
+        {            
             try
             {
                 // Check to see if the company specific directory has been created yet or not, if not create it and copy all of the base configs into it
@@ -465,7 +450,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
         }
 
         /// <summary>
-        /// Gets the peth to the <c>ObjectProvider</c> configuration files
+        /// Gets the path to the <c>ObjectProvider</c> configuration files
         /// </summary>
         /// <param name="forOrganization">True if the path is for the <c>organization</c> specific files and false otherwise</param>
         /// <returns>The relative path to the configuration files</returns>
@@ -473,15 +458,12 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
         {
             if (forOrganization)
             {
-                var path = Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(typeof(DynamicCrmAdapter).Assembly.Location), ObjectConfigFolderName), AdapterType), this.InstallAdapter.OrganizationName);
+                var path = Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(typeof(DynamicCrmAdapter).Assembly.Location), ObjectConfigFolderName), this.AdapterType), this.InstallAdapter.OrganizationName);
                 return path;
             }
 
             return Path.Combine(Path.GetDirectoryName(typeof(DynamicCrmAdapter).Assembly.Location), ObjectConfigFolderName);
         }
-        #endregion
-
-        #region Private Methods
 
         private static void GenerateGlobalPicklistObjectDefinitionEntries(ObjectDefinition objDef, RetrieveAllOptionSetsResponse response)
         {
@@ -495,11 +477,10 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
             foreach (var optionSet in customizableGlobalPicklists)
             {
                 ComplexType complexType = CRM2011AdapterUtilities.ComplexTypeConvert(AttributeTypeCode.Picklist, objDef);
-                FieldDefinition globalDef = new FieldDefinition() { Name = optionSet.Name, TypeDefinition = complexType, DisplayName = optionSet.DisplayName.LocalizedLabels[0].Label};
+                FieldDefinition globalDef = new FieldDefinition() { Name = optionSet.Name, TypeDefinition = complexType, DisplayName = optionSet.DisplayName.LocalizedLabels[0].Label };
                 globalDef.AdditionalAttributes = attribs.ToArray();
                 objDef.Types.First().Children.Add(globalDef);
-            }
-            
+            }            
         }
                 
         private static void GenerateEntityManytoManyObjectDefinitionEntries(ObjectDefinition objDef, string entityDisplayName)
@@ -565,18 +546,16 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
         }
 
         private static void GeneratePicklistObjectDefinitionEntries(ObjectDefinition objDef, RetrieveAllEntitiesResponse response)
-        {
-            
-            var orderedEntityMetadata = ((EntityMetadata[])response.Results.First().Value).Where(x=>x.DisplayName.LocalizedLabels.Count > 0).OrderBy(x => x.DisplayName.LocalizedLabels[0].Label);
+        {            
+            var orderedEntityMetadata = ((EntityMetadata[])response.Results.First().Value).Where(x => x.DisplayName.LocalizedLabels.Count > 0).OrderBy(x => x.DisplayName.LocalizedLabels[0].Label);
             
             // For each entity, add a Type
             foreach (var entityMetadata in orderedEntityMetadata)
             {
                 var picklistAttributesMetaData = entityMetadata.Attributes.Where(x => x.AttributeType == AttributeTypeCode.Picklist && x.IsCustomizable.Value == true).OrderBy(x => x.LogicalName);
                 var picklistAttributes = picklistAttributesMetaData.Where(x => ((PicklistAttributeMetadata)x).OptionSet.IsGlobal.Value == false);
-
-
                 var entityDisplayName = entityMetadata.DisplayName.LocalizedLabels[0].Label;
+
                 // All picklists for an entity are here.
                 if (picklistAttributes.Count() > 0)
                 {
@@ -594,23 +573,21 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
                             FieldDefinition tempDef = new FieldDefinition() { Name = picklist.LogicalName, DisplayName = displayName, TypeDefinition = fieldType, TypeName = fieldType.Name };
                             complexType.Fields.Add(tempDef);
                         }
-
                     }
-
                 }
             }
+
             var optionSetValueType = new CollectionType() { ClrType = typeof(string[]), Name = "OptionSetValue" };
             optionSetValueType.Item = new FieldDefinition() { Name = "Item", TypeName = "System.String", DisplayName = "Options", IsRequired = false };
 
             objDef.Types.Add(optionSetValueType);
-
         }
 
         private void GenerateObjectDefinitionEntries(ObjectDefinition objDef, RetrieveEntityResponse response, string parentTypeName)
         {
             foreach (XrmMetadata.AttributeMetadata attributeMeta in response.EntityMetadata.Attributes.OrderBy(a => a.LogicalName))
             {
-                if (attributeMeta.DisplayName.LocalizedLabels.Count > 0&& !CRM2011AdapterUtilities.GetUnmappedLookupFields().Contains(attributeMeta.LogicalName))
+                if (attributeMeta.DisplayName.LocalizedLabels.Count > 0 && !CRM2011AdapterUtilities.GetUnmappedLookupFields().Contains(attributeMeta.LogicalName))
                 {
                     string displayName = attributeMeta.DisplayName.LocalizedLabels[0].Label;
                     Type tempType = CRM2011AdapterUtilities.SimpleTypeConvert(attributeMeta.AttributeType.Value);
@@ -629,11 +606,11 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
                             LookupAttributeMetadata lookupMeta = attributeMeta as LookupAttributeMetadata;
                             if (lookupMeta != null && complexType.Name != "PartyList")
                             {
-                                tempDef.AdditionalAttributes = GetLookupAttributes(lookupMeta).ToArray();
+                                tempDef.AdditionalAttributes = this.GetLookupAttributes(lookupMeta).ToArray();
                             }
                             else if (lookupMeta != null && complexType.Name == "PartyList")
                             {
-                                var attribs = GetLookupAttributes(lookupMeta);
+                                var attribs = this.GetLookupAttributes(lookupMeta);
                                 foreach (var field in complexType.Fields)
                                 {
                                     if (field.TypeName == "EntityReference")
@@ -663,18 +640,17 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
 
                 for (int i = 0; i < types.Count(); i++)
                 {
-
                     typeAttrib.Value += types[i];
 
                     if (types[i].Equals("transactioncurrency"))
                     {
                         fieldAttrib.Value += "isocurrencycode";
-                    }
-                    // Things like systemuser should be modified to utilize a different value captured in the config utility.
-                    // thereby allowing the user to select the matching field prior to having the config created and 
-                    // requiring manual modifications later.
+                    }                    
                     else if (types[i].Equals("systemuser"))
                     {
+                        // Things like systemuser should be modified to utilize a different value captured in the config utility.
+                        // thereby allowing the user to select the matching field prior to having the config created and 
+                        // requiring manual modifications later.
                         fieldAttrib.Value += "fullname";
                     }
                     else if (types[i].Equals("businessunit") || types[i].Equals("uom") || types[i].Equals("uomschedule"))
@@ -695,10 +671,14 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
                              
                        var entityMetaDataResponse = this.InstallAdapter.OrganizationService.Execute(entityMetaDataRequest) as RetrieveEntityResponse;
 
-                      if (entityMetaDataResponse != null)
-                          fieldAttrib.Value += entityMetaDataResponse.EntityMetadata.PrimaryIdAttribute;
-                       else
-                          fieldAttrib.Value += types[i] + "id";
+                        if (entityMetaDataResponse != null)
+                        {
+                            fieldAttrib.Value += entityMetaDataResponse.EntityMetadata.PrimaryIdAttribute;
+                        }
+                        else
+                        {
+                            fieldAttrib.Value += types[i] + "id";
+                        }
                     }
 
                     if (types.Count() > 0 && i < types.Count() - 1)
@@ -721,8 +701,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
 
             return attribs;
         }
-
-
 
         private static void AddTypes(ObjectDefinition objDef, FieldDefinition fieldDef, TypeDefinition typeDef, string parentTypeName)
         {
@@ -771,8 +749,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
         /// <param name="objDef"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         private void FillPicklistObjectDef(ObjectDefinition objDef)
-        {
-            
+        {            
             var entityMetaDataRequest = new RetrieveAllEntitiesRequest();
             entityMetaDataRequest.EntityFilters = EntityFilters.Attributes;
             entityMetaDataRequest.RetrieveAsIfPublished = true;
@@ -786,7 +763,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
         }
 
         /// <summary>
-        /// Query the metadata of the manytomany objects to sync the source and destination orgs.
+        /// Query the metadata of the many to many objects to sync the source and destination orgs.
         /// </summary>
         /// <param name="objDef"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
@@ -801,15 +778,12 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
             RetrieveEntityRequest request = new RetrieveEntityRequest() { LogicalName = objDef.RootDefinition.TypeName, EntityFilters = EntityFilters.Attributes | EntityFilters.Relationships, RetrieveAsIfPublished = true };
             RetrieveEntityResponse response = this.InstallAdapter.OrganizationService.Execute(request) as RetrieveEntityResponse;
             
-
-            GenerateObjectDefinitionEntries(objDef, response, objDef.RootDefinition.TypeName);
+            this.GenerateObjectDefinitionEntries(objDef, response, objDef.RootDefinition.TypeName);
             List<OneToManyRelationshipMetadata> parentChildRelationships = (from meta in response.EntityMetadata.OneToManyRelationships
                                                                             where (meta.CascadeConfiguration.Reparent.Value == CascadeType.NoCascade && meta.IsCustomRelationship.Value == true)
                                                                             || (meta.SecurityTypes == SecurityTypes.ParentChild && meta.IsCustomRelationship.Value == false)
                                                                             || meta.ReferencingEntity == "customeraddress"
                                                                             select meta).ToList();
-
-            
 
             foreach (OneToManyRelationshipMetadata relation in parentChildRelationships)
             {
@@ -829,10 +803,10 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
                     }
                 }
 
-                request = new RetrieveEntityRequest() { EntityFilters = EntityFilters.All, LogicalName = relation.ReferencingEntity, RetrieveAsIfPublished = true }; ;
+                request = new RetrieveEntityRequest() { EntityFilters = EntityFilters.All, LogicalName = relation.ReferencingEntity, RetrieveAsIfPublished = true };
                 response = this.InstallAdapter.OrganizationService.Execute(request) as RetrieveEntityResponse;
                 
-                GenerateObjectDefinitionEntries(objDef, response, relation.ReferencingEntity);
+                this.GenerateObjectDefinitionEntries(objDef, response, relation.ReferencingEntity);
                 XmlDocument doc = new XmlDocument();
                 XmlAttribute parentAttrib = doc.CreateAttribute(CRM2011AdapterUtilities.IsParentField);
                 parentAttrib.Value = true.ToString(CultureInfo.InvariantCulture).ToUpperInvariant();
@@ -859,7 +833,7 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
         {
             if (this.InstallAdapter.MetadataTimestamp != this.InstallAdapter.RetrieveMetadataTimestamp())
             {
-                List<ObjectProvider>  MtoMAvailableProviders = new List<ObjectProvider>();
+                List<ObjectProvider> MtoMAvailableProviders = new List<ObjectProvider>();
 
                 this.availableProviders = new List<ObjectProvider>();
                 RetrieveAllEntitiesRequest retrieveAll = new RetrieveAllEntitiesRequest();
@@ -878,7 +852,6 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
                         this.availableProviders.Add(new DynamicObjectProvider() { Adapter = this.InstallAdapter, Id = crmMetadata.MetadataId.Value, DisplayName = entityResponse.EntityMetadata.DisplayName.LocalizedLabels[0].Label, Name = entityResponse.EntityMetadata.LogicalName });
                     }
 
-
                     List<ManyToManyRelationshipMetadata> entityMToMRelationships = (from meta in entityResponse.EntityMetadata.ManyToManyRelationships
                                                                                          where (meta.IsCustomRelationship.Value == true)
                                                                                          || (meta.SecurityTypes == SecurityTypes.ParentChild && meta.IsCustomRelationship.Value == false)
@@ -887,8 +860,10 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
                     {
                         foreach (ManyToManyRelationshipMetadata relation in entityMToMRelationships)
                         {
-                            if (!MtoMAvailableProviders.Any(f=> f.DisplayName == relation.SchemaName))
-                                MtoMAvailableProviders.Add(new DynamicObjectProvider() { Adapter = this.InstallAdapter, Id = relation.MetadataId.Value, DisplayName = relation.SchemaName, Name = relation.SchemaName + ",Relationship"});
+                            if (!MtoMAvailableProviders.Any(f => f.DisplayName == relation.SchemaName))
+                            {
+                                MtoMAvailableProviders.Add(new DynamicObjectProvider() { Adapter = this.InstallAdapter, Id = relation.MetadataId.Value, DisplayName = relation.SchemaName, Name = relation.SchemaName + ",Relationship" });
+                            }
                         }
                     }
                 }
@@ -905,7 +880,5 @@ namespace Microsoft.Dynamics.Integration.Adapters.DynamicCrm.Configuration
 
             return this.availableProviders;
         }
-
-        #endregion
     }
 }
