@@ -168,7 +168,7 @@
         /// </summary>
         /// <param name="entityName">The name of the <c>BusinessEntity</c> as a <c>string</c> to be queried</param>
         /// <param name="criterion">An <c>ICiterion</c> instance to use for duplicate detection</param>
-        /// <param name="columnSet">A CRM <c>ColumnSet</c> containing the set of columns to be retruned from the query.</param>
+        /// <param name="columnSet">A CRM <c>ColumnSet</c> containing the set of columns to be returned from the query.</param>
         /// <exception cref="AdapterException">Thrown if the <c>ICriterion</c> parameter is null</exception>
         /// <returns>A <c>QueryExpression</c> that can used to retrieve entities from the CRM Service</returns>
         /// <remarks>This method sets the Distinct property of the returned <c>QueryExpression</c> to <c>false</c></remarks>
@@ -510,7 +510,7 @@
         /// Converts a CRM <c>AttributeType</c> into a simple .NET type.
         /// </summary>
         /// <param name="typeToConvert">The CRM <c>AttributeType</c> to be converted.</param>
-        /// <returns>A .NET <see cref="Type"/> that coeesponds to the CRM type.</returns>
+        /// <returns>A .NET <see cref="Type"/> that represents the CRM type.</returns>
         public static Type SimpleTypeConvert(AttributeTypeCode typeToConvert)
         {
             switch (typeToConvert)
@@ -582,8 +582,8 @@
         /// <summary>
         /// Determines if an option set is one of the customer address 1 or 2 option sets.
         /// </summary>
-        /// <param name="entity">The CRM <c>Entity</c> surrently being integrated.</param>
-        /// <param name="field">The <see cref="FieldDefinition"/> for the CRM attribute curently being integrated.</param>
+        /// <param name="entity">The CRM <c>Entity</c> currently being integrated.</param>
+        /// <param name="field">The <see cref="FieldDefinition"/> for the CRM attribute currently being integrated.</param>
         /// <returns>True if the field is one of the customer address 1 or 2 fields, false otherwise.</returns>
         internal static bool IsSpecialAddressPicklist(Entity entity, FieldDefinition field)
         {
@@ -651,6 +651,11 @@
             return tempType;
         }
 
+        /// <summary>
+        /// Produces a <see cref="ComplexType"/> from the <see cref="ObjectDefinition"/> for the CRM option set type.
+        /// </summary>
+        /// <param name="objDef">The <see cref="ObjectDefinition"/> for the option set.</param>
+        /// <returns>A <see cref="ComplexType"/> that can contain a CRM option set instance.</returns>
         private static ComplexType GetComplexTypeForPicklist(ObjectDefinition objDef)
         {
             System.Collections.ObjectModel.ObservableCollection<FieldDefinition> fields = new System.Collections.ObjectModel.ObservableCollection<FieldDefinition>();
@@ -662,6 +667,11 @@
             return tempType;
         }
 
+        /// <summary>
+        /// Produces a <see cref="ComplexType"/> from the <see cref="ObjectDefinition"/> for the CRM status type.
+        /// </summary>
+        /// <param name="objDef">The <see cref="ObjectDefinition"/> for the status entity.</param>
+        /// <returns>A <see cref="ComplexType"/> that can contain a CRM status instance.</returns>
         private static ComplexType GetComplexTypeForStatus(ObjectDefinition objDef)
         {
             System.Collections.ObjectModel.ObservableCollection<FieldDefinition> fields = new System.Collections.ObjectModel.ObservableCollection<FieldDefinition>();
@@ -672,6 +682,11 @@
             return tempType;
         }
 
+        /// <summary>
+        /// Produces a <see cref="ComplexType"/> from the <see cref="ObjectDefinition"/> for the CRM <c>Money</c> type.
+        /// </summary>
+        /// <param name="objDef">The <see cref="ObjectDefinition"/> for the option set.</param>
+        /// <returns>A <see cref="ComplexType"/> that can contain a CRM <c>money</c> instance.</returns>
         private static ComplexType GetComplexTypeForMoney(ObjectDefinition objDef)
         {
             System.Collections.ObjectModel.ObservableCollection<FieldDefinition> fields = new System.Collections.ObjectModel.ObservableCollection<FieldDefinition>();
@@ -726,6 +741,12 @@
             }
         }
 
+        /// <summary>
+        /// Validates query parameters
+        /// </summary>
+        /// <param name="entityName">The name of the entity to be queried.</param>
+        /// <param name="queryProperty">The attribute on the entity to query.</param>
+        /// <exception cref="AdapterException">Thrown if either paramter is null or empty.</exception>
         private static void ValidatePropertyQueryParameters(string entityName, string queryProperty)
         {
             if (string.IsNullOrEmpty(entityName))
